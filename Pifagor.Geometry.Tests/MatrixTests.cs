@@ -24,5 +24,16 @@ namespace Pifagor.Geometry.Tests
 
             Assert.That(actual, Is.EqualTo(expected));
         }
+
+        [Test]
+        public void ScalarMultiplication()
+        {
+            var m = new MatrixVector(1,2);
+            var actual = m*10;
+
+            var expected = new MatrixVector(10,20);
+            Assert.That(actual, Is.EqualTo(expected));
+
+        }
     }
 }

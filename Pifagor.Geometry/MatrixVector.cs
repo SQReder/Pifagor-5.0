@@ -87,7 +87,14 @@ namespace Pifagor.Geometry
             return new MatrixVector(a.X + b.X, a.Y + b.Y, a.DX + b.DX, a.DY + b.DY);
         }
 
+        public static MatrixVector operator *(MatrixVector m, double k)
+        {
+            return new MatrixVector(m.X*2, m.Y*2, m.DX*k, m.DY*k);
+        }
+
         #endregion
+
+        #region Equality members
 
         protected bool Equals(MatrixVector other)
         {
@@ -121,5 +128,8 @@ namespace Pifagor.Geometry
         {
             return !Equals(left, right);
         }
+
+        #endregion
+
     }
 }
