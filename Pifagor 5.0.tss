@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<ArrayOfArrayOfArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ArrayOfArrayOfString>
+    <ArrayOfString>
+      <string>S:\Projects\C#\Pifagor 5.0\Pifagor 5.0\Form1.cs</string>
+      <string>S:\Projects\C#\Pifagor 5.0\Pifagor 5.0\Form1.cs</string>
+      <string>S:\Projects\C#\Pifagor 5.0\Pifagor 5.0\Form1.Designer.cs</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>S:\Projects\C#\Pifagor 5.0\Pifagor 5.0\Cluster.cs</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>S:\Projects\C#\Pifagor 5.0\Pifagor 5.0\vector.cs</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>S:\Projects\C#\Pifagor 5.0\Pifagor 5.0\VectorEx.cs</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>S:\Projects\C#\Pifagor 5.0\Pifagor 5.0\Program.cs</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>S:\Projects\C#\Pifagor 5.0\Pifagor 5.0\App.config</string>
+    </ArrayOfString>
+  </ArrayOfArrayOfString>
+</ArrayOfArrayOfArrayOfString>
