@@ -44,5 +44,13 @@ namespace Pifagor.Geometry.Tests
             Assert.That(v.x, Is.EqualTo(10));
             Assert.That(v.y, Is.EqualTo(10));
         }
+
+        [Test]
+        public void ZeroCoordinates()
+        {
+            var v = Vector.Zero;
+            Assert.That(v.x, Is.EqualTo(0));
+            Assert.That(v.y, Is.EqualTo(0));
+        }
     }
 }

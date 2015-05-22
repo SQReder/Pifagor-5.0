@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Pifagor.Geometry
 {
@@ -13,9 +14,8 @@ namespace Pifagor.Geometry
 
         #region Contructors
 
-        public Vector() : this(0, 0)
-        {
-        }
+        protected Vector() : this(0, 0)
+        { }
 
         public Vector(double x, double y)
         {
@@ -76,6 +76,7 @@ namespace Pifagor.Geometry
             return Equals((Vector) obj);
         }
 
+        [ExcludeFromCodeCoverage]
         public override int GetHashCode()
         {
             unchecked

@@ -51,7 +51,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="ClusterMathTests.cs" />
+    <Compile Include="ClusterMath.GetFirstLayerIndexTestCase.cs" />
+    <Compile Include="ClusterMath.GetLayerNumberTestCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

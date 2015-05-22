@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using NUnit.Framework;
 
 namespace Pifagor.Geometry.Tests
@@ -25,11 +26,10 @@ namespace Pifagor.Geometry.Tests
             Assert.AreEqual(expectedRadius, vector.R, Compare.AbsTol);
         }
 
-        [Test]
+        [Test, Combinatorial]
         public void TwoWayConversion_MakeSameResultAsSource(
-            [Random(1)] double x,
-            [Random(1)] double y
-            )
+            [Values(0,1,-1,Math.PI, -Math.PI)]    double x,
+            [Values(0, 1, -1, Math.PI, -Math.PI)] double y)
         {
             var vector = new Vector(x, y).ToRadialVector().ToVector();
 
@@ -59,7 +59,5 @@ namespace Pifagor.Geometry.Tests
             var unit = new RadialVector(10, 0).Unit();
             Assert.That(unit.R, Is.EqualTo(1));
         }
-
-
     }
 }
