@@ -19,7 +19,6 @@ namespace Pifagor.Geometry.Tests
         [Test]
         public void RotateCompositionIsEqualAngleSummRotate()
         {
-            var v = new Vector(1,0);
             var tm = TransformationMatrix.RotationMatrix(Math.PI);
             var tmComposition = TransformationMatrix.RotationMatrix(Math.PI/2)*TransformationMatrix.RotationMatrix(Math.PI/2);
             Assert.That(tm, Is.EqualTo(tmComposition));

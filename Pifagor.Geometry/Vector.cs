@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pifagor.Geometry
 {
@@ -10,9 +6,8 @@ namespace Pifagor.Geometry
     {
         #region Fields
 
-        public double x;
-        public double y;
-        private const double Tolerance = 0.000001;
+        public readonly double x;
+        public readonly double y;
 
         #endregion
 
@@ -24,18 +19,13 @@ namespace Pifagor.Geometry
 
         public Vector(double x, double y)
         {
-            Set(x, y);
+            this.x = x;
+            this.y = y;
         }
 
         #endregion
 
         #region Public members
-
-        public void Set(double x, double y)
-        {
-            this.x = x;
-            this.y = y;
-        }
 
         public double Length => Math.Sqrt(x*x + y*y);
         public static Vector Zero => new Vector(0,0);
@@ -82,7 +72,7 @@ namespace Pifagor.Geometry
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Vector) obj);
         }
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NUnit.Framework;
-using Assert = NUnit.Framework.Assert;
+﻿using NUnit.Framework;
 
 namespace Pifagor.Geometry.Tests
 {
