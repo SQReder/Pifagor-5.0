@@ -43,7 +43,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="GeometryExtensions.cs" />
-    <Compile Include="MatrixVector.cs" />
+    <Compile Include="TransformationMatrix.cs" />
     <Compile Include="RadialVector.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -8,23 +8,6 @@ namespace Pifagor.Geometry.Tests
     public class VectorTests
     {
         [Test]
-        public void UnitReturnZeroVector_ForZeroVector()
-        {
-            var unit = new Vector(0, 0).Unit();
-            Assert.AreEqual(0, unit.Length, Compare.AbsTol);
-        }
-
-        [Test]
-        public void GetUnit_From(
-            [Random(1)] double x,
-            [Random(1)] double y
-            )
-        {
-            var unit = new Vector(x, y).Unit();
-            Assert.AreEqual(1, unit.Length, Compare.AbsTol);
-        }
-
-        [Test]
         public void VectorAddition()
         {
             var a = new Vector(1,1);

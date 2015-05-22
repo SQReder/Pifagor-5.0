@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Pifagor.Geometry
+﻿namespace Pifagor.Geometry
 {
     public struct RadialVector
     {
-        public double r;
-        public double a;
+        public readonly double R;
+        public readonly double A;
 
         public RadialVector(double r, double a)
         {
-            this.r = r;
-            this.a = a;
+            R = r;
+            A = a;
         }
+
+        public static RadialVector Zero => new RadialVector(0,0);
     }
 }

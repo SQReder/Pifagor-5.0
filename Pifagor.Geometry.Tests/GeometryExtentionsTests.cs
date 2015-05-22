@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using NUnit.Framework;
 
 namespace Pifagor.Geometry.Tests
@@ -22,8 +21,8 @@ namespace Pifagor.Geometry.Tests
         {
             var vector = new Vector(x, y).ToRadialVector();
 
-            Assert.AreEqual(expectedAngle, vector.a, Compare.AbsTol);
-            Assert.AreEqual(expectedRadius, vector.r, Compare.AbsTol);
+            Assert.AreEqual(expectedAngle, vector.A, Compare.AbsTol);
+            Assert.AreEqual(expectedRadius, vector.R, Compare.AbsTol);
         }
 
         [Test]
@@ -37,5 +36,30 @@ namespace Pifagor.Geometry.Tests
             Assert.AreEqual(x, vector.x, Compare.AbsTol);
             Assert.AreEqual(y, vector.y, Compare.AbsTol);
         }
+
+        [Test]
+        public void UnitReturnZeroVector_ForZeroVector()
+        {
+            var unit = new Vector(0, 0).Unit();
+            Assert.AreEqual(0, unit.Length, Compare.AbsTol);
+        }
+
+        [Test]
+        [TestCase(1,1)]
+        [TestCase(-1,0)]
+        public void GetUnit_FromVector(double x, double y)
+        {
+            var unit = new Vector(x, y).Unit();
+            Assert.AreEqual(1, unit.Length, Compare.AbsTol);
+        }
+
+        [Test]
+        public void GetUnit_FromRadialVector()
+        {
+            var unit = new RadialVector(10, 0).Unit();
+            Assert.That(unit.R, Is.EqualTo(1));
+        }
+
+
     }
 }

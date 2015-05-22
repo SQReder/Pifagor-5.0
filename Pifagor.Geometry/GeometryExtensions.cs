@@ -7,8 +7,8 @@ namespace Pifagor.Geometry
 
         public static Vector ToVector(this RadialVector radialVector)
         {
-            var x = radialVector.r * Math.Cos(radialVector.a);
-            var y = radialVector.r * Math.Sin(radialVector.a);
+            var x = radialVector.R * Math.Cos(radialVector.A);
+            var y = radialVector.R * Math.Sin(radialVector.A);
             return new Vector(x, y);
         }
 
@@ -39,7 +39,12 @@ namespace Pifagor.Geometry
         public static Vector Unit(this Vector vector)
         {
             var l = vector.Length;
-            return Compare.IsEquals(l, 0) ? new Vector(0, 0) : new Vector(vector.x / l, vector.y / l);
+            return Compare.IsEquals(l, 0) ? Vector.Zero : new Vector(vector.x / l, vector.y / l);
+        }
+
+        public static RadialVector Unit(this RadialVector r)
+        {
+            return Compare.IsEquals(0, r.R) ? RadialVector.Zero : new RadialVector(1, r.A);
         }
     }
 }

@@ -38,6 +38,7 @@ namespace Pifagor.Geometry
         }
 
         public double Length => Math.Sqrt(x*x + y*y);
+        public static Vector Zero => new Vector(0,0);
 
         #endregion
 

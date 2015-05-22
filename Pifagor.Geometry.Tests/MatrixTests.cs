@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace Pifagor.Geometry.Tests
 {
@@ -6,34 +7,38 @@ namespace Pifagor.Geometry.Tests
     public class MatrixTests
     {
         [Test]
-        public void CreateMatrixWithPreserveCoordinates()
+        public void RotateVector()
         {
-            var matrixVector = new MatrixVector(1,2);
-            Assert.AreEqual(1, matrixVector.X, Compare.AbsTol);
-            Assert.AreEqual(2, matrixVector.Y, Compare.AbsTol);
+            var v = new Vector(1,0);
+            var tm = TransformationMatrix.RotationMatrix(Math.PI/2);
+            var actual = v*tm;
+            Assert.AreEqual(0, actual.x, Compare.AbsTol);
+            Assert.AreEqual(1, actual.y, Compare.AbsTol);
         }
 
         [Test]
-        public void Addition()
+        public void RotateCompositionIsEqualAngleSummRotate()
         {
-            var m1 = new MatrixVector(1,2,3,4);
-            var m2 = new MatrixVector(5,6,7,8);
-            var expected = new MatrixVector(6,8,10,12);
-
-            var actual = m1 + m2;
-
-            Assert.That(actual, Is.EqualTo(expected));
+            var v = new Vector(1,0);
+            var tm = TransformationMatrix.RotationMatrix(Math.PI);
+            var tmComposition = TransformationMatrix.RotationMatrix(Math.PI/2)*TransformationMatrix.RotationMatrix(Math.PI/2);
+            Assert.That(tm, Is.EqualTo(tmComposition));
         }
 
         [Test]
-        public void ScalarMultiplication()
+        public void Translate()
         {
-            var m = new MatrixVector(1,2);
-            var actual = m*10;
+            var v = new Vector(1, 0);
+            var tm = TransformationMatrix.TranslationMatrix(1, 2);
+            var actual = v*tm;
+            Assert.AreEqual(2,actual.x,Compare.AbsTol);
+            Assert.AreEqual(2,actual.y,Compare.AbsTol);
+        }
 
-            var expected = new MatrixVector(10,20);
-            Assert.That(actual, Is.EqualTo(expected));
-
+        [Test]
+        public void TranslateAndRotateComposition()
+        {
+            
         }
     }
 }
