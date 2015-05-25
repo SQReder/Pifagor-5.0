@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Pifagor.ClusterTree
 {
@@ -10,7 +14,7 @@ namespace Pifagor.ClusterTree
         /// <param name="treeBase">Порядок дерева</param>
         /// <param name="index">Номер кластера</param>
         /// <returns>Номер уровня, на котором находится нода</returns>
-        public static int GetLayerNumber(int treeBase, int index)
+        internal static int GetLayerNumber(int treeBase, int index)
         {
             if (index < 0)
                 throw new ArgumentOutOfRangeException(nameof(index), index, "Index must be greater or equal zero");
@@ -29,7 +33,7 @@ namespace Pifagor.ClusterTree
             return n - 1;
         }
 
-        public static int GetFirstIndexOfLayer(int treeBase, int layer)
+        internal static int GetFirstIndexOfLayer(int treeBase, int layer)
         {
             if (layer < 0)
                 throw new ArgumentOutOfRangeException(nameof(layer), layer, "Index must be greater or equal zero");
@@ -44,6 +48,28 @@ namespace Pifagor.ClusterTree
                 sum += (int)Math.Pow(treeBase, n);
             }
             return sum + 1;
+        }
+
+        internal static IEnumerable<int> InternalGetPathToIndex(int treeBase, int index)
+        {
+            var layerNumber = GetLayerNumber(treeBase, index);
+            var firstIndexOfLayer = GetFirstIndexOfLayer(treeBase, layerNumber);
+            var x = index - firstIndexOfLayer;
+            var path = new List<int>();
+            while (x != 0)
+            {
+                path.Add(x % treeBase);
+                x = x / treeBase;
+            }
+            while (path.Count < layerNumber)
+                path.Insert(0,0);
+
+            return path;
+        }
+
+        public static int[] GetPathToIndex(int treeBase, int index)
+        {
+            return InternalGetPathToIndex(treeBase, index).ToArray();
         }
     }
 }

@@ -62,6 +62,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClusterMath.GetPathToIndex.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>

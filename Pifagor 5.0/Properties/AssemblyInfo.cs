@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Pifagor 5.0")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("QWERule")]
+[assembly: AssemblyCompany("QWERule inc")]
 [assembly: AssemblyProduct("Pifagor 5.0")]
 [assembly: AssemblyCopyright("Copyright © QWERule 2012")]
 [assembly: AssemblyTrademark("")]

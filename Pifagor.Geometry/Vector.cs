@@ -14,9 +14,6 @@ namespace Pifagor.Geometry
 
         #region Contructors
 
-        protected Vector() : this(0, 0)
-        { }
-
         public Vector(double x, double y)
         {
             this.x = x;
@@ -52,11 +49,6 @@ namespace Pifagor.Geometry
         public static double operator *(Vector a, Vector b)
         {
             return a.x*b.x + a.y*b.y;
-        }
-
-        public static double operator ^(Vector a, Vector b)
-        {
-            return a.x*b.y - a.y*b.x;
         }
 
         #endregion
