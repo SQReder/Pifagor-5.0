@@ -11,8 +11,8 @@ namespace Pifagor.Geometry.Tests
         public void CreateVectorFromRadiusVector()
         {
             var v = new RadialVector(0, 0).ToVector();
-            Assert.AreEqual(0, v.x, Compare.AbsTol);
-            Assert.AreEqual(0, v.y, Compare.AbsTol);
+            Assert.AreEqual(0, v.X, Compare.AbsTol);
+            Assert.AreEqual(0, v.Y, Compare.AbsTol);
         }
 
         [TestCase(0,0,0,0)]
@@ -33,8 +33,8 @@ namespace Pifagor.Geometry.Tests
         {
             var vector = new Vector(x, y).ToRadialVector().ToVector();
 
-            Assert.AreEqual(x, vector.x, Compare.AbsTol);
-            Assert.AreEqual(y, vector.y, Compare.AbsTol);
+            Assert.AreEqual(x, vector.X, Compare.AbsTol);
+            Assert.AreEqual(y, vector.Y, Compare.AbsTol);
         }
 
         [Test]

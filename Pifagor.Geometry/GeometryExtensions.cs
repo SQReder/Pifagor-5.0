@@ -16,21 +16,21 @@ namespace Pifagor.Geometry
         {
             var r = vector.Length;
             double a;
-            if (Compare.IsEquals(vector.x, 0))
+            if (Compare.IsEquals(vector.X, 0))
             {
-                if (Compare.IsEquals(vector.y, 0))
+                if (Compare.IsEquals(vector.Y, 0))
                 {
                     a = 0;
                 }
                 else
                 {
-                    a = Math.PI / 2d * Math.Sign(vector.y);
+                    a = Math.PI / 2d * Math.Sign(vector.Y);
                 }
                 
             }
             else
             {
-                a = Math.Atan(vector.y / vector.x) + ((vector.x < 0) ? Math.PI : 0);
+                a = Math.Atan(vector.Y / vector.X) + ((vector.X < 0) ? Math.PI : 0);
                 
             }
             return new RadialVector(r, a);
@@ -39,7 +39,7 @@ namespace Pifagor.Geometry
         public static Vector Unit(this Vector vector)
         {
             var l = vector.Length;
-            return Compare.IsEquals(l, 0) ? Vector.Zero : new Vector(vector.x / l, vector.y / l);
+            return Compare.IsEquals(l, 0) ? Vector.Zero : new Vector(vector.X / l, vector.Y / l);
         }
 
         public static RadialVector Unit(this RadialVector r)

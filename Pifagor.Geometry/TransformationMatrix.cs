@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Pifagor.Geometry
 {
-    class TransformationMatrix
+    public class TransformationMatrix
     {
         #region Fields
 
@@ -11,10 +11,9 @@ namespace Pifagor.Geometry
 
         #endregion
 
-
         #region Constructors
 
-        private TransformationMatrix()
+        protected TransformationMatrix()
         {
             for (var i = 0; i != 3; ++i)
                 _data[i, i] = 1;
@@ -49,17 +48,31 @@ namespace Pifagor.Geometry
             };
         }
 
+        public static TransformationMatrix ScaleMatrix(double kx, double ky)
+        {
+            return new TransformationMatrix
+            {
+                [0,0] = kx,
+                [1,1] = ky,
+            };
+        }
+
+        public static TransformationMatrix NoTransformation()
+        {
+            return new TransformationMatrix();
+        }
+
         #endregion
 
-        #region Public members
+        #region Private members
 
-        private double this[int row, int col]
+        protected double this[int row, int col]
         {
             get { return _data[row, col]; }
             set { _data[row, col] = value; }
         }
 
-        #endregion Public members
+        #endregion Private members
 
         #region Operators overloading
 
@@ -82,8 +95,8 @@ namespace Pifagor.Geometry
 
         public static Vector operator *(Vector v, TransformationMatrix t)
         {
-            var x = v.x;
-            var y = v.y;
+            var x = v.X;
+            var y = v.Y;
             return new Vector(
                 x * t[0, 0] + y * t[1, 0] + t[2, 0],
                 x * t[0, 1] + y * t[1, 1] + t[2, 1]
@@ -94,6 +107,7 @@ namespace Pifagor.Geometry
 
         #region Equality members
 
+        [ExcludeFromCodeCoverage]
         protected bool Equals(TransformationMatrix other)
         {
             if (!Compare.IsEquals(_data[0, 0], other._data[0, 0])) return false;
@@ -106,6 +120,7 @@ namespace Pifagor.Geometry
             return true;
         }
 
+        [ExcludeFromCodeCoverage]
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;

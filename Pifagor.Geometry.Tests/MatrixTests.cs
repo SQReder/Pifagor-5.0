@@ -12,18 +12,19 @@ namespace Pifagor.Geometry.Tests
             var v = new Vector(1,0);
             var tm = TransformationMatrix.RotationMatrix(Math.PI/2);
             var actual = v*tm;
-            Assert.AreEqual(0, actual.x, Compare.AbsTol);
-            Assert.AreEqual(1, actual.y, Compare.AbsTol);
+            Assert.AreEqual(0, actual.X, Compare.AbsTol);
+            Assert.AreEqual(1, actual.Y, Compare.AbsTol);
         }
 
         [Test]
-        public void Translate()
+        public void TranslateVector()
         {
             var v = new Vector(1, 0);
             var tm = TransformationMatrix.TranslationMatrix(1, 2);
             var actual = v*tm;
-            Assert.AreEqual(2,actual.x,Compare.AbsTol);
-            Assert.AreEqual(2,actual.y,Compare.AbsTol);
+            Assert.AreEqual(2,actual.X,Compare.AbsTol);
+            Assert.AreEqual(2,actual.Y,Compare.AbsTol);
+        }
         }
 
         [Test]

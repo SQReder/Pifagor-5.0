@@ -3,12 +3,21 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Pifagor.Geometry
 {
-    public class Vector
+    public class Vector: TransformationMatrix
     {
-        #region Fields
+        #region Properties
 
-        public readonly double x;
-        public readonly double y;
+        public double X
+        {
+            get { return this[2,0]; }
+            set { this[2, 0] = value; }
+        }
+
+        public double Y
+        {
+            get { return this[2,1]; }
+            set { this[2, 1] = value; }
+        }
 
         #endregion
 
@@ -16,15 +25,15 @@ namespace Pifagor.Geometry
 
         public Vector(double x, double y)
         {
-            this.x = x;
-            this.y = y;
+            X = x;
+            Y = y;
         }
 
         #endregion
 
         #region Public members
 
-        public double Length => Math.Sqrt(x*x + y*y);
+        public double Length => Math.Sqrt(X*X + Y*Y);
         public static Vector Zero => new Vector(0,0);
 
         #endregion
@@ -33,33 +42,35 @@ namespace Pifagor.Geometry
 
         public static Vector operator +(Vector a, Vector b)
         {
-            return new Vector(a.x + b.x, a.y + b.y);
+            return new Vector(a.X + b.X, a.Y + b.Y);
         }
 
         public static Vector operator -(Vector a, Vector b)
         {
-            return new Vector(a.x - b.x, b.x - b.y);
+            return new Vector(a.X - b.X, b.X - b.Y);
         }
 
         public static Vector operator *(Vector a, double k)
         {
-            return new Vector(a.x*k, a.y*k);
+            return new Vector(a.X*k, a.Y*k);
         }
 
         public static double operator *(Vector a, Vector b)
         {
-            return a.x*b.x + a.y*b.y;
+            return a.X*b.X + a.Y*b.Y;
         }
 
         #endregion
 
         #region Equality members
 
+        [ExcludeFromCodeCoverage]
         protected bool Equals(Vector other)
         {
-            return Compare.IsEquals(x,other.x) && Compare.IsEquals(y, other.y);
+            return Compare.IsEquals(X,other.X) && Compare.IsEquals(Y, other.Y);
         }
 
+        [ExcludeFromCodeCoverage]
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -73,11 +84,20 @@ namespace Pifagor.Geometry
         {
             unchecked
             {
-                return (x.GetHashCode()*397) ^ y.GetHashCode();
+                return (X.GetHashCode()*397) ^ Y.GetHashCode();
             }
         }
 
         #endregion
 
+        #region Formatting members 
+
+        [ExcludeFromCodeCoverage]
+        public override string ToString()
+        {
+            return $"{base.ToString()}, X: {X}, Y: {Y}";
+        }
+
+        #endregion
     }
 }
