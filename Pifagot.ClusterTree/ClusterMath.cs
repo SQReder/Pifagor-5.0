@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Pifagor.ClusterTree
 {
@@ -50,7 +47,7 @@ namespace Pifagor.ClusterTree
             return sum + 1;
         }
 
-        internal static IEnumerable<int> InternalGetPathToIndex(int treeBase, int index)
+        public static int[] GetPathToIndex(int treeBase, int index)
         {
             var layerNumber = GetLayerNumber(treeBase, index);
             var firstIndexOfLayer = GetFirstIndexOfLayer(treeBase, layerNumber);
@@ -63,13 +60,7 @@ namespace Pifagor.ClusterTree
             }
             while (path.Count < layerNumber)
                 path.Insert(0,0);
-
-            return path;
-        }
-
-        public static int[] GetPathToIndex(int treeBase, int index)
-        {
-            return InternalGetPathToIndex(treeBase, index).ToArray();
+            return path.ToArray();
         }
     }
 }

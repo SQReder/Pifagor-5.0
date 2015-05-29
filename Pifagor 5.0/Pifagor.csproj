@@ -99,7 +99,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Fakes Include="Fakes\Pifagor.Geometry.fakes" />
     <None Include="packages.config" />
     <None Include="Pifagor_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">

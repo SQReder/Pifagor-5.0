@@ -43,6 +43,12 @@
     <Compile Include="ClusterMath.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pifagor.Geometry\Pifagor.Geometry.csproj">
+      <Project>{a4dd12e4-6a3c-4df4-b332-f1a104c21421}</Project>
+      <Name>Pifagor.Geometry</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

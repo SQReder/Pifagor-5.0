@@ -53,9 +53,14 @@
   <ItemGroup>
     <Compile Include="ClusterMath.GetFirstLayerIndexTestCase.cs" />
     <Compile Include="ClusterMath.GetLayerNumberTestCase.cs" />
+    <Compile Include="ClusterMath.VectorProcessing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Pifagor.Geometry\Pifagor.Geometry.csproj">
+      <Project>{a4dd12e4-6a3c-4df4-b332-f1a104c21421}</Project>
+      <Name>Pifagor.Geometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Pifagot.ClusterTree\Pifagor.ClusterTree.csproj">
       <Project>{7223E56F-A82E-4379-90E2-8EA843F5FAEA}</Project>
       <Name>Pifagor.ClusterTree</Name>

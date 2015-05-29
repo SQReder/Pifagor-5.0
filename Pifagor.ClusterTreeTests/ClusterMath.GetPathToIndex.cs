@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Pifagor.ClusterTree;
 
 namespace Pifagor.ClusterTree.Tests
 {

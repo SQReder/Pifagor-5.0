@@ -40,8 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FractalCluster.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="GeometryExtensions.cs" />
+    <Compile Include="Segment.cs" />
+    <Compile Include="TransformationChainBuilder.cs" />
     <Compile Include="TransformationMatrix.cs" />
     <Compile Include="RadialVector.cs" />
     <Compile Include="Vector.cs" />

@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pifagor.Geometry.Tests", "Pifagor.Geometry.Tests\Pifagor.Geometry.Tests.csproj", "{73159B76-91A7-485B-9DBC-42779CE1DBF9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pifagor.ClusterTree", "Pifagot.ClusterTree\Pifagor.ClusterTree.csproj", "{7223E56F-A82E-4379-90E2-8EA843F5FAEA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A4DD12E4-6A3C-4DF4-B332-F1A104C21421} = {A4DD12E4-6A3C-4DF4-B332-F1A104C21421}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pifagor.ClusterTreeTests", "Pifagor.ClusterTreeTests\Pifagor.ClusterTreeTests.csproj", "{C3484745-3D60-4B65-9D1A-72D7A0A47959}"
 EndProject

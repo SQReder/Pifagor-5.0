@@ -25,6 +25,15 @@ namespace Pifagor.Geometry.Tests
             Assert.AreEqual(2,actual.X,Compare.AbsTol);
             Assert.AreEqual(2,actual.Y,Compare.AbsTol);
         }
+
+        [Test]
+        public void ScaleVector()
+        {
+            var v = new Vector(1, 1);
+            var tm = TransformationMatrix.ScaleMatrix(2, 3);
+            var actual = v*tm;
+            Assert.AreEqual(2, actual.X, Compare.AbsTol);
+            Assert.AreEqual(3, actual.Y, Compare.AbsTol);
         }
 
         [Test]
@@ -39,6 +48,22 @@ namespace Pifagor.Geometry.Tests
         public void TranslateAndRotateComposition()
         {
             Assert.Fail();   
+        }
+
+        [Test]
+        public void RotationByZero_EqualTo_NoopMatrix()
+        {
+            var rotation = TransformationMatrix.RotationMatrix(0);
+            var noop = TransformationMatrix.NoTransformation();
+            Assert.That(rotation, Is.EqualTo(noop));
+        }
+
+        [Test]
+        public void TranslationByZero_EqualTo_NoopMatrix()
+        {
+            var rotation = TransformationMatrix.TranslationMatrix(0,0);
+            var noop = TransformationMatrix.NoTransformation();
+            Assert.That(rotation, Is.EqualTo(noop));
         }
     }
 }
