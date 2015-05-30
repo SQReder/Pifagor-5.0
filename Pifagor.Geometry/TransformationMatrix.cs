@@ -23,7 +23,7 @@ namespace Pifagor.Geometry
 
         #region Fabric methods
 
-        public static TransformationMatrix TranslationMatrix(double tx, double ty)
+        public static TransformationMatrix Translate(double tx, double ty)
         {
             return new TransformationMatrix
             {
@@ -32,7 +32,7 @@ namespace Pifagor.Geometry
             };
         }
 
-        public static TransformationMatrix RotationMatrix(double alpha)
+        public static TransformationMatrix Rotate(double alpha)
         {
             return RotationMatrixBySinCos(Math.Sin(alpha), Math.Cos(alpha));
         }
@@ -48,7 +48,7 @@ namespace Pifagor.Geometry
             };
         }
 
-        public static TransformationMatrix ScaleMatrix(double kx, double ky)
+        public static TransformationMatrix Scale(double kx, double ky)
         {
             return new TransformationMatrix
             {
@@ -57,7 +57,7 @@ namespace Pifagor.Geometry
             };
         }
 
-        public static TransformationMatrix NoTransformation()
+        public static TransformationMatrix Noop()
         {
             return new TransformationMatrix();
         }

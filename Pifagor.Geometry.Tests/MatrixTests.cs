@@ -10,7 +10,7 @@ namespace Pifagor.Geometry.Tests
         public void RotateVector()
         {
             var v = new Vector(1,0);
-            var tm = TransformationMatrix.RotationMatrix(Math.PI/2);
+            var tm = TransformationMatrix.Rotate(Math.PI/2);
             var actual = v*tm;
             Assert.AreEqual(0, actual.X, Compare.AbsTol);
             Assert.AreEqual(1, actual.Y, Compare.AbsTol);
@@ -20,7 +20,7 @@ namespace Pifagor.Geometry.Tests
         public void TranslateVector()
         {
             var v = new Vector(1, 0);
-            var tm = TransformationMatrix.TranslationMatrix(1, 2);
+            var tm = TransformationMatrix.Translate(1, 2);
             var actual = v*tm;
             Assert.AreEqual(2,actual.X,Compare.AbsTol);
             Assert.AreEqual(2,actual.Y,Compare.AbsTol);
@@ -30,7 +30,7 @@ namespace Pifagor.Geometry.Tests
         public void ScaleVector()
         {
             var v = new Vector(1, 1);
-            var tm = TransformationMatrix.ScaleMatrix(2, 3);
+            var tm = TransformationMatrix.Scale(2, 3);
             var actual = v*tm;
             Assert.AreEqual(2, actual.X, Compare.AbsTol);
             Assert.AreEqual(3, actual.Y, Compare.AbsTol);
@@ -39,31 +39,38 @@ namespace Pifagor.Geometry.Tests
         [Test]
         public void RotateComposition_EqualToAngleSummRotate()
         {
-            var tm = TransformationMatrix.RotationMatrix(Math.PI);
-            var tmComposition = TransformationMatrix.RotationMatrix(Math.PI/2)*TransformationMatrix.RotationMatrix(Math.PI/2);
+            var tm = TransformationMatrix.Rotate(Math.PI);
+            var tmComposition = TransformationMatrix.Rotate(Math.PI/2)*TransformationMatrix.Rotate(Math.PI/2);
             Assert.That(tm, Is.EqualTo(tmComposition));
         }
 
-        [Test, Ignore]
-        public void TranslateAndRotateComposition()
+        [Test]
+        public void TransformComposition()
         {
-            Assert.Fail();   
+            var expected = new Vector(-2, 0);
+
+            var vector = new Vector(1,0);
+            var transform = TransformationMatrix.Rotate(Math.PI);
+            transform *= TransformationMatrix.Scale(2, 2);
+            var actual = vector* transform;
+
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
         public void RotationByZero_EqualTo_NoopMatrix()
         {
-            var rotation = TransformationMatrix.RotationMatrix(0);
-            var noop = TransformationMatrix.NoTransformation();
+            var rotation = TransformationMatrix.Rotate(0);
+            var noop = TransformationMatrix.Noop();
             Assert.That(rotation, Is.EqualTo(noop));
         }
 
         [Test]
         public void TranslationByZero_EqualTo_NoopMatrix()
         {
-            var rotation = TransformationMatrix.TranslationMatrix(0,0);
-            var noop = TransformationMatrix.NoTransformation();
-            Assert.That(rotation, Is.EqualTo(noop));
+            var translate = TransformationMatrix.Translate(0,0);
+            var noop = TransformationMatrix.Noop();
+            Assert.That(translate, Is.EqualTo(noop));
         }
     }
 }

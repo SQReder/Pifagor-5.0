@@ -24,7 +24,7 @@ namespace Pifagor.Geometry.Tests
             var expected = new Segment(new Vector(-1,0), new Vector(0,-1));
 
             var s = new Segment(new Vector(1,0), new Vector(0,1));
-            var tm = TransformationMatrix.RotationMatrix(Math.PI);
+            var tm = TransformationMatrix.Rotate(Math.PI);
 
             var actual = s*tm;
             Assert.That(actual, Is.EqualTo(expected));
