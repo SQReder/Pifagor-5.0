@@ -64,5 +64,15 @@ namespace Pifagor.ClusterTree
                 child.Dispose();
             }
         }
+
+        public void Traverse(Action<Tree<T>> action)
+        {
+            action(this);
+
+            foreach (var child in _children)
+            {
+                child.Traverse(action);
+            }
+        }
     }
 }

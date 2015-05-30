@@ -8,7 +8,7 @@ namespace Pifagor.ClusterTree.Tests
     [TestFixture]
     public class TreeTests
     {
-        interface INode
+        public interface INode
         {
             void DoSmth();
         }
@@ -89,6 +89,27 @@ namespace Pifagor.ClusterTree.Tests
             root.Dispose();
 
             child.CallsTo(a => a.Dispose()).MustHaveHappened();
+        }
+
+        [Test]
+        public void Traverse()
+        {
+            var fakes = new[] {
+                A.Fake<INode>(),
+                A.Fake<INode>(),
+                A.Fake<INode>(),
+            };
+
+            var root = new Tree<INode>(fakes[0]);
+            root.Attach(new Tree<INode>(fakes[1]));
+            root.Attach(new Tree<INode>(fakes[2]));
+
+            root.Traverse(t => t.Data.DoSmth());
+
+            foreach (var fake in fakes)
+            {
+                fake.CallsTo(i => i.DoSmth()).MustHaveHappened();
+            }
         }
     }
 }
