@@ -11,8 +11,8 @@ namespace Pifagor.Geometry.Tests
         public void CreateVectorFromRadiusVector()
         {
             var v = new RadialVector(0, 0).ToVector();
-            Assert.AreEqual(0, v.X, Compare.AbsTol);
-            Assert.AreEqual(0, v.Y, Compare.AbsTol);
+            Assert.AreEqual(0, v.X, Utils.AbsTol);
+            Assert.AreEqual(0, v.Y, Utils.AbsTol);
         }
 
         [TestCase(0,0,0,0)]
@@ -22,8 +22,8 @@ namespace Pifagor.Geometry.Tests
         {
             var vector = new Vector(x, y).ToRadialVector();
 
-            Assert.AreEqual(expectedAngle, vector.A, Compare.AbsTol);
-            Assert.AreEqual(expectedRadius, vector.R, Compare.AbsTol);
+            Assert.AreEqual(expectedAngle, vector.A, Utils.AbsTol);
+            Assert.AreEqual(expectedRadius, vector.R, Utils.AbsTol);
         }
 
         [Test, Combinatorial]
@@ -33,15 +33,15 @@ namespace Pifagor.Geometry.Tests
         {
             var vector = new Vector(x, y).ToRadialVector().ToVector();
 
-            Assert.AreEqual(x, vector.X, Compare.AbsTol);
-            Assert.AreEqual(y, vector.Y, Compare.AbsTol);
+            Assert.AreEqual(x, vector.X, Utils.AbsTol);
+            Assert.AreEqual(y, vector.Y, Utils.AbsTol);
         }
 
         [Test]
         public void UnitReturnZeroVector_ForZeroVector()
         {
             var unit = new Vector(0, 0).Unit();
-            Assert.AreEqual(0, unit.Length, Compare.AbsTol);
+            Assert.AreEqual(0, unit.Length, Utils.AbsTol);
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace Pifagor.Geometry.Tests
         public void GetUnit_FromVector(double x, double y)
         {
             var unit = new Vector(x, y).Unit();
-            Assert.AreEqual(1, unit.Length, Compare.AbsTol);
+            Assert.AreEqual(1, unit.Length, Utils.AbsTol);
         }
 
         [Test]

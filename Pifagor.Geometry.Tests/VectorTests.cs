@@ -8,23 +8,25 @@ namespace Pifagor.Geometry.Tests
         [Test]
         public void VectorAddition()
         {
-            var a = new Vector(1,1);
-            var b = new Vector(1,2);
-            var c = a + b;
+            var expected = new Vector(11, 24);
 
-            Assert.AreEqual(2,c.X, Compare.AbsTol);
-            Assert.AreEqual(3,c.Y, Compare.AbsTol);
+            var a = new Vector(1,3);
+            var b = new Vector(10,21);
+            var actual = a + b;
+
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
         public void VectorSubstraction()
         {
-            var a = new Vector(1,1);
-            var b = new Vector(1,2);
-            var c = a - b;
+            var expected = new Vector(-4,-4);
 
-            Assert.AreEqual(0,c.X, Compare.AbsTol);
-            Assert.AreEqual(-1,c.Y, Compare.AbsTol);
+            var a = new Vector(1,3);
+            var b = new Vector(5,7);
+            var actual = a - b;
+
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
@@ -34,7 +36,7 @@ namespace Pifagor.Geometry.Tests
             var b = new Vector(1, 2);
             var c = a*b;
 
-            Assert.AreEqual(4, c, Compare.AbsTol);
+            Assert.AreEqual(4, c, Utils.AbsTol);
         }
 
         [Test]

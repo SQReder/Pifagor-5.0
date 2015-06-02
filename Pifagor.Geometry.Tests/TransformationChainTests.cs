@@ -9,7 +9,7 @@ namespace Pifagor.Geometry.Tests
         [Test]
         public void InitialState_EqualsTo_NoopMatrix()
         {
-            var expected = TransformationMatrix.Noop();
+            var expected = TransformationMatrix.Noop;
 
             var builder = new TransformationChainBuilder();
             var result = builder.Result;
@@ -20,7 +20,7 @@ namespace Pifagor.Geometry.Tests
         [Test]
         public void BuildOneTransform_EqualsTo_SameTransform()
         {
-            var matrix = TransformationMatrix.Scale(2, 2);
+            var matrix = TransformationMatrix.Scaling(2, 2);
 
             var builder = new TransformationChainBuilder();
             var result = builder.Append(matrix).Result;
@@ -31,9 +31,9 @@ namespace Pifagor.Geometry.Tests
         [Test]
         public void BuildManyTransform_EqualsTo_CompositionOfTransformations()
         {
-            var translate = TransformationMatrix.Translate(1, 0);
-            var rotate = TransformationMatrix.Rotate(Math.PI);
-            var scale = TransformationMatrix.Scale(2, 2);
+            var translate = TransformationMatrix.Translation(1, 0);
+            var rotate = TransformationMatrix.Rotation(Math.PI);
+            var scale = TransformationMatrix.Scaling(2, 2);
             var expected = translate * rotate * scale;
 
             var builder = new TransformationChainBuilder();

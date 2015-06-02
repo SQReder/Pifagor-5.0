@@ -23,7 +23,7 @@ namespace Pifagor.Geometry
 
         #region Fabric methods
 
-        public static TransformationMatrix Translate(double tx, double ty)
+        public static TransformationMatrix Translation(double tx, double ty)
         {
             return new TransformationMatrix
             {
@@ -32,7 +32,7 @@ namespace Pifagor.Geometry
             };
         }
 
-        public static TransformationMatrix Rotate(double alpha)
+        public static TransformationMatrix Rotation(double alpha)
         {
             return RotationMatrixBySinCos(Math.Sin(alpha), Math.Cos(alpha));
         }
@@ -48,7 +48,7 @@ namespace Pifagor.Geometry
             };
         }
 
-        public static TransformationMatrix Scale(double kx, double ky)
+        public static TransformationMatrix Scaling(double kx, double ky)
         {
             return new TransformationMatrix
             {
@@ -57,22 +57,34 @@ namespace Pifagor.Geometry
             };
         }
 
-        public static TransformationMatrix Noop()
-        {
-            return new TransformationMatrix();
-        }
+        public static TransformationMatrix Noop
+        => new TransformationMatrix();
+        
 
         #endregion
 
         #region Private members
 
-        protected double this[int row, int col]
+        public double this[int row, int col]
         {
             get { return _data[row, col]; }
             set { _data[row, col] = value; }
         }
 
-        #endregion Private members
+        #endregion
+
+        //#region Public members
+
+        //public void ApplyTo(ref Vector v)
+        //{
+        //    var x = v.X;
+        //    var y = v.Y;
+
+        //    v.X = x*this[0, 0] + y*this[1, 0] + this[2, 0];
+        //    v.Y = x*this[0, 1] + y*this[1, 1] + this[2, 1];
+        //}
+
+        //#endregion
 
         #region Operators overloading
 
@@ -93,16 +105,6 @@ namespace Pifagor.Geometry
             return matrix;
         }
 
-        public static Vector operator *(Vector v, TransformationMatrix t)
-        {
-            var x = v.X;
-            var y = v.Y;
-            return new Vector(
-                x * t[0, 0] + y * t[1, 0] + t[2, 0],
-                x * t[0, 1] + y * t[1, 1] + t[2, 1]
-            );
-        }
-
         #endregion
 
         #region Equality members
@@ -110,12 +112,12 @@ namespace Pifagor.Geometry
         [ExcludeFromCodeCoverage]
         protected bool Equals(TransformationMatrix other)
         {
-            if (!Compare.IsEquals(_data[0, 0], other._data[0, 0])) return false;
-            if (!Compare.IsEquals(_data[0, 1], other._data[0, 1])) return false;
-            if (!Compare.IsEquals(_data[1, 0], other._data[1, 0])) return false;
-            if (!Compare.IsEquals(_data[1, 1], other._data[1, 1])) return false;
-            if (!Compare.IsEquals(_data[2, 0], other._data[2, 0])) return false;
-            if (!Compare.IsEquals(_data[2, 1], other._data[2, 1])) return false;
+            if (!Utils.IsEquals(_data[0, 0], other._data[0, 0])) return false;
+            if (!Utils.IsEquals(_data[0, 1], other._data[0, 1])) return false;
+            if (!Utils.IsEquals(_data[1, 0], other._data[1, 0])) return false;
+            if (!Utils.IsEquals(_data[1, 1], other._data[1, 1])) return false;
+            if (!Utils.IsEquals(_data[2, 0], other._data[2, 0])) return false;
+            if (!Utils.IsEquals(_data[2, 1], other._data[2, 1])) return false;
 
             return true;
         }
@@ -154,9 +156,14 @@ namespace Pifagor.Geometry
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            return $"R0: ({_data[0, 0]},{_data[0, 1]}), R1: ({_data[1, 0]},{_data[1, 1]}), TX: {_data[2, 0]}, TY: {_data[2, 1]}";
+            return $"R0: ({Utils.Format(_data[0, 0])},{Utils.Format(_data[0, 1])}), R1: ({Utils.Format(_data[1, 0])},{Utils.Format(_data[1, 1])}), TX: {Utils.Format(_data[2, 0])}, TY: {Utils.Format(_data[2, 1])}";
         }
 
         #endregion
+
+        public static TransformationMatrix Scaling(double kx)
+        {
+            return Scaling(kx, kx);
+        }
     }
 }

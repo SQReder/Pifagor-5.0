@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FractalCluster.cs" />
-    <Compile Include="Compare.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="GeometryExtensions.cs" />
     <Compile Include="Segment.cs" />
     <Compile Include="TransformationChainBuilder.cs" />

@@ -1,9 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Pifagor.Geometry
 {
     class Segment
     {
+
         public Segment(Vector begin, Vector end)
         {
             Begin = begin;
@@ -12,10 +14,22 @@ namespace Pifagor.Geometry
 
         public Vector Begin { get; }
         public Vector End { get; }
+        public Vector RelativeVector => End - Begin;
 
+        [Obsolete]
         public static Segment operator *(Segment seg, TransformationMatrix tm)
         {
             return new Segment(seg.Begin * tm, seg.End * tm);
+        }
+
+        public TransformationMatrix ToTransformationMatrix()
+        {
+            var angle = RelativeVector.Angle();
+            var scale = RelativeVector.Length;
+
+            return TransformationMatrix.Translation(Begin.X, Begin.Y)
+                   *TransformationMatrix.Rotation(angle)
+                   *TransformationMatrix.Scaling(scale);
         }
 
         #region Equality members
@@ -38,18 +52,8 @@ namespace Pifagor.Geometry
         {
             unchecked
             {
-                return ((Begin != null ? Begin.GetHashCode() : 0)*397) ^ (End != null ? End.GetHashCode() : 0);
+                return (Begin.GetHashCode() *397) ^ End.GetHashCode();
             }
-        }
-
-        public static bool operator ==(Segment left, Segment right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(Segment left, Segment right)
-        {
-            return !Equals(left, right);
         }
 
         #endregion

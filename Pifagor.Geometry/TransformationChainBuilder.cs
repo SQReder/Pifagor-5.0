@@ -5,7 +5,7 @@ namespace Pifagor.Geometry
     public class TransformationChainBuilder
     {
         private readonly Queue<TransformationMatrix> _chain = new Queue<TransformationMatrix>();
-        private TransformationMatrix _result = TransformationMatrix.Noop();
+        private TransformationMatrix _result = TransformationMatrix.Noop;
          
         public TransformationChainBuilder Append(TransformationMatrix tm)
         {

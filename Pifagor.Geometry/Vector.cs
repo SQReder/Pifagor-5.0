@@ -3,24 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Pifagor.Geometry
 {
-    public class Vector: TransformationMatrix
+    public class Vector
     {
-        #region Properties
-
-        public double X
-        {
-            get { return this[2,0]; }
-            set { this[2, 0] = value; }
-        }
-
-        public double Y
-        {
-            get { return this[2,1]; }
-            set { this[2, 1] = value; }
-        }
-
-        #endregion
-
         #region Contructors
 
         public Vector(double x, double y)
@@ -33,8 +17,32 @@ namespace Pifagor.Geometry
 
         #region Public members
 
-        public double Length => Math.Sqrt(X*X + Y*Y);
-        public static Vector Zero => new Vector(0,0);
+        public static Vector Base => new Vector(1, 0);
+        public static Vector Zero => new Vector(0, 0);
+
+        #endregion
+
+        #region IVector members
+
+        public double Length => Math.Sqrt(X * X + Y * Y);
+        public double X { get; set; }
+        public double Y { get; set; }
+
+
+        public Vector Translate(double tx, double ty)
+        {            
+            return this * TransformationMatrix.Translation(tx, ty); ;
+        }
+
+        public Vector Rotate(double alpha)
+        {
+            return this * TransformationMatrix.Rotation(alpha);
+        }
+
+        public Vector Scale(double k)
+        {
+            return this * TransformationMatrix.Scaling(k);
+        }
 
         #endregion
 
@@ -47,7 +55,7 @@ namespace Pifagor.Geometry
 
         public static Vector operator -(Vector a, Vector b)
         {
-            return new Vector(a.X - b.X, b.X - b.Y);
+            return new Vector(a.X - b.X, a.Y - b.Y);
         }
 
         public static Vector operator *(Vector a, double k)
@@ -60,14 +68,24 @@ namespace Pifagor.Geometry
             return a.X*b.X + a.Y*b.Y;
         }
 
+        public static Vector operator *(Vector v, TransformationMatrix t)
+        {
+            var x = v.X;
+            var y = v.Y;
+
+            v.X = x * t[0, 0] + y * t[1, 0] + t[2, 0];
+            v.Y = x * t[0, 1] + y * t[1, 1] + t[2, 1];
+
+            return v;
+        }
         #endregion
 
         #region Equality members
 
         [ExcludeFromCodeCoverage]
-        protected bool Equals(Vector other)
+        public bool Equals(Vector other)
         {
-            return Compare.IsEquals(X,other.X) && Compare.IsEquals(Y, other.Y);
+            return Utils.IsEquals(X, other.X) && Utils.IsEquals(Y, other.Y);
         }
 
         [ExcludeFromCodeCoverage]
@@ -75,7 +93,7 @@ namespace Pifagor.Geometry
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (obj.GetType() != this.GetType()) return false;
             return Equals((Vector) obj);
         }
 
@@ -95,7 +113,7 @@ namespace Pifagor.Geometry
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            return $"{base.ToString()}, X: {X}, Y: {Y}";
+            return $"({Utils.Format(X)}, {Utils.Format(Y)})";
         }
 
         #endregion
