@@ -4,21 +4,6 @@ namespace Pifagor.Geometry
 {
     public static class GeometryExtensions
     {
-
-        public static Vector ToVector(this RadialVector radialVector)
-        {
-            var x = radialVector.R * Math.Cos(radialVector.A);
-            var y = radialVector.R * Math.Sin(radialVector.A);
-            return new Vector(x, y);
-        }
-
-        public static RadialVector ToRadialVector(this Vector vector)
-        {
-            var r = vector.Length;
-            var a = Angle(vector);
-            return new RadialVector(r, a);
-        }
-
         public static double Angle(this Vector vector)
         {
             double a;
@@ -44,11 +29,6 @@ namespace Pifagor.Geometry
         {
             var l = vector.Length;
             return Utils.IsEquals(l, 0) ? Vector.Zero : new Vector(vector.X / l, vector.Y / l);
-        }
-
-        public static RadialVector Unit(this RadialVector r)
-        {
-            return Utils.IsEquals(0, r.R) ? RadialVector.Zero : new RadialVector(1, r.A);
         }
     }
 }
