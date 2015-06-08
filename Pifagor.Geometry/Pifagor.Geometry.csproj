@@ -41,11 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FractalCluster.cs" />
+    <Compile Include="Transform.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="GeometryExtensions.cs" />
     <Compile Include="Segment.cs" />
     <Compile Include="TransformationChainBuilder.cs" />
-    <Compile Include="TransformationMatrix.cs" />
+    <Compile Include="NewTransformationMatrix.cs" />
     <Compile Include="RadialVector.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

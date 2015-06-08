@@ -27,9 +27,9 @@ namespace Pifagor.Geometry
             var angle = RelativeVector.Angle();
             var scale = RelativeVector.Length;
 
-            return TransformationMatrix.Translation(Begin.X, Begin.Y)
-                   *TransformationMatrix.Rotation(angle)
-                   *TransformationMatrix.Scaling(scale);
+            return new TranslationMatrix(Begin.X, Begin.Y)
+                   *new RotationMatrix(angle)
+                   *new ScaleMatrix(scale);
         }
 
         #region Equality members

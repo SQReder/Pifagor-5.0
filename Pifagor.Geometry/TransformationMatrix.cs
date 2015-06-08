@@ -5,13 +5,10 @@ namespace Pifagor.Geometry
 {
     public class TransformationMatrix
     {
-        #region Fields
+        protected readonly double[,] _data = new double[3, 3];
 
-        private readonly double[,] _data = new double[3, 3];
-
-        #endregion
-
-        #region Constructors
+        public static TransformationMatrix Noop
+            => new TransformationMatrix();
 
         protected TransformationMatrix()
         {
@@ -19,74 +16,11 @@ namespace Pifagor.Geometry
                 _data[i, i] = 1;
         }
 
-        #endregion
-
-        #region Fabric methods
-
-        public static TransformationMatrix Translation(double tx, double ty)
-        {
-            return new TransformationMatrix
-            {
-                [2, 0] = tx,
-                [2, 1] = ty
-            };
-        }
-
-        public static TransformationMatrix Rotation(double alpha)
-        {
-            return RotationMatrixBySinCos(Math.Sin(alpha), Math.Cos(alpha));
-        }
-
-        private static TransformationMatrix RotationMatrixBySinCos(double sinalpha, double cosalpha)
-        {
-            return new TransformationMatrix
-            {
-                [0, 0] = cosalpha,
-                [0, 1] = sinalpha,
-                [1, 0] = -sinalpha,
-                [1, 1] = cosalpha
-            };
-        }
-
-        public static TransformationMatrix Scaling(double kx, double ky)
-        {
-            return new TransformationMatrix
-            {
-                [0,0] = kx,
-                [1,1] = ky,
-            };
-        }
-
-        public static TransformationMatrix Noop
-        => new TransformationMatrix();
-        
-
-        #endregion
-
-        #region Private members
-
         public double this[int row, int col]
         {
             get { return _data[row, col]; }
             set { _data[row, col] = value; }
         }
-
-        #endregion
-
-        //#region Public members
-
-        //public void ApplyTo(ref Vector v)
-        //{
-        //    var x = v.X;
-        //    var y = v.Y;
-
-        //    v.X = x*this[0, 0] + y*this[1, 0] + this[2, 0];
-        //    v.Y = x*this[0, 1] + y*this[1, 1] + this[2, 1];
-        //}
-
-        //#endregion
-
-        #region Operators overloading
 
         public static TransformationMatrix operator *(TransformationMatrix left, TransformationMatrix right)
         {
@@ -105,9 +39,7 @@ namespace Pifagor.Geometry
             return matrix;
         }
 
-        #endregion
-
-        #region Equality members
+        #region Equaliry members
 
         [ExcludeFromCodeCoverage]
         protected bool Equals(TransformationMatrix other)
@@ -128,7 +60,7 @@ namespace Pifagor.Geometry
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((TransformationMatrix) obj);
+            return Equals((TransformationMatrix) (object) (TransformationMatrix) obj);
         }
 
         [ExcludeFromCodeCoverage]
@@ -156,14 +88,68 @@ namespace Pifagor.Geometry
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            return $"R0: ({Utils.Format(_data[0, 0])},{Utils.Format(_data[0, 1])}), R1: ({Utils.Format(_data[1, 0])},{Utils.Format(_data[1, 1])}), TX: {Utils.Format(_data[2, 0])}, TY: {Utils.Format(_data[2, 1])}";
+            return
+                $"R0: ({Utils.Format(_data[0, 0])},{Utils.Format(_data[0, 1])}), R1: ({Utils.Format(_data[1, 0])},{Utils.Format(_data[1, 1])}), TX: {Utils.Format(_data[2, 0])}, TY: {Utils.Format(_data[2, 1])}";
         }
 
         #endregion
+    }
 
-        public static TransformationMatrix Scaling(double kx)
+    public class TranslationMatrix : TransformationMatrix
+    {
+        public double TX
         {
-            return Scaling(kx, kx);
+            get { return _data[2, 0]; }
+            set { _data[2, 0] = value; }
         }
+
+        public double TY
+        {
+            get { return _data[2, 1]; }
+            set { _data[2, 1] = value; }
+        }
+
+        public TranslationMatrix(): this(1,1)
+        { }
+
+        public TranslationMatrix(double tx, double ty) : base()
+        {
+                TX = tx;
+                TY = ty;
+        }
+    }
+
+    public class RotationMatrix : TransformationMatrix
+    {
+        public RotationMatrix() : this(0)
+        { }
+
+        public RotationMatrix(double alpha)
+        {
+            RotationMatrixBySinCos(Math.Sin(alpha), Math.Cos(alpha));
+        }
+
+        private void RotationMatrixBySinCos(double sinalpha, double cosalpha)
+        {
+            _data[0, 0] = cosalpha;
+            _data[0, 1] = sinalpha;
+            _data[1, 0] = -sinalpha;
+            _data[1, 1] = cosalpha;
+        }
+    }
+
+    public class ScaleMatrix : TransformationMatrix
+    {
+        public ScaleMatrix(): this(1)
+        { }
+
+        public ScaleMatrix(double kx, double ky)
+        {
+                _data[0,0] = kx;
+                _data[1,1] = ky;
+        }
+
+        public ScaleMatrix(double k):this(k,k)
+        {}
     }
 }

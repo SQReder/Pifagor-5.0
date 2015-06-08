@@ -29,20 +29,20 @@ namespace Pifagor.Geometry
         public double Y { get; set; }
 
 
-        public Vector Translate(double tx, double ty)
-        {            
-            return this * TransformationMatrix.Translation(tx, ty); ;
-        }
+        //public Vector Translate(double tx, double ty)
+        //{            
+        //    return this * TransformationMatrix.Translation(tx, ty); ;
+        //}
 
-        public Vector Rotate(double alpha)
-        {
-            return this * TransformationMatrix.Rotation(alpha);
-        }
+        //public Vector Rotate(double alpha)
+        //{
+        //    return this * NewTransformationMatrix.Rotation(alpha);
+        //}
 
-        public Vector Scale(double k)
-        {
-            return this * TransformationMatrix.Scaling(k);
-        }
+        //public Vector Scale(double k)
+        //{
+        //    return this * NewTransformationMatrix.Scaling(k);
+        //}
 
         #endregion
 
