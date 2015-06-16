@@ -93,6 +93,11 @@ namespace Pifagor.Geometry
         }
 
         #endregion
+
+        public Vector Apply(Vector vector)
+        {
+            return vector * this;
+        }
     }
 
     public class TranslationMatrix : TransformationMatrix

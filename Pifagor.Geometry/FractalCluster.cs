@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Pifagor.Geometry
 {
-    class FractalCluster : IReadOnlyList<Segment>
+    public class FractalCluster: IEnumerable<Segment>
     {
         private readonly List<Segment> _segments = new List<Segment>();
 
-        private void Add(Segment v)
+        public void Add(Segment v)
         {
             _segments.Add(v);
         }
@@ -26,12 +26,12 @@ namespace Pifagor.Geometry
             return GetEnumerator();
         }
 
-        public static FractalCluster operator *(FractalCluster fc, TransformationMatrix tm)
+        public FractalCluster TransformWith(Segment seg)
         {
             var result = new FractalCluster();
-            foreach (var segment in fc._segments)
+            foreach (var segment in _segments)
             {
-                result.Add(segment * tm);
+                result.Add(segment.TransformWith(seg));
             }
             return result;
         }

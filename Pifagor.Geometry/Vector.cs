@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 
 namespace Pifagor.Geometry
 {
-    public class Vector
+    public struct Vector
     {
         #region Contructors
 
@@ -25,24 +26,9 @@ namespace Pifagor.Geometry
         #region IVector members
 
         public double Length => Math.Sqrt(X * X + Y * Y);
-        public double X { get; set; }
-        public double Y { get; set; }
 
-
-        //public Vector Translate(double tx, double ty)
-        //{            
-        //    return this * TransformationMatrix.Translation(tx, ty); ;
-        //}
-
-        //public Vector Rotate(double alpha)
-        //{
-        //    return this * NewTransformationMatrix.Rotation(alpha);
-        //}
-
-        //public Vector Scale(double k)
-        //{
-        //    return this * NewTransformationMatrix.Scaling(k);
-        //}
+        public double X { get; private set; }
+        public double Y { get; private set; }
 
         #endregion
 
@@ -117,5 +103,10 @@ namespace Pifagor.Geometry
         }
 
         #endregion
+
+        public static implicit operator PointF(Vector v)
+        {
+            return new PointF((float) v.X, (float) v.Y);
+        }
     }
 }

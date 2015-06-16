@@ -1,10 +1,9 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-
-namespace Pifagor.Geometry
+﻿namespace Pifagor.Geometry
 {
-    class Segment
+    public class Segment
     {
+        public Vector Begin { get; }
+        public Vector End { get; }
 
         public Segment(Vector begin, Vector end)
         {
@@ -12,24 +11,32 @@ namespace Pifagor.Geometry
             End = end;
         }
 
-        public Vector Begin { get; }
-        public Vector End { get; }
-        public Vector RelativeVector => End - Begin;
-
-        [Obsolete]
-        public static Segment operator *(Segment seg, TransformationMatrix tm)
+        public Segment TransformWith(Segment segment)
         {
-            return new Segment(seg.Begin * tm, seg.End * tm);
+            var translate = new TranslationMatrix(segment.Begin.X, segment.Begin.Y);
+            var tmBegin = segment.Begin.GetBaseVectorTransformation();
+            var tmEnd= segment.End.GetBaseVectorTransformation();
+            var tm = (segment.End - segment.Begin).GetBaseVectorTransformation();
+            var begin = Begin*tm;
+            var end = End*tm;
+            begin *= translate;
+            end *= translate;
+            return new Segment(begin, end);
         }
 
-        public TransformationMatrix ToTransformationMatrix()
+        private TransformationMatrix GetTranslationMatrix()
         {
-            var angle = RelativeVector.Angle();
-            var scale = RelativeVector.Length;
+            return new TranslationMatrix(Begin.X, Begin.Y);
+        }
 
-            return new TranslationMatrix(Begin.X, Begin.Y)
-                   *new RotationMatrix(angle)
-                   *new ScaleMatrix(scale);
+        private TransformationMatrix GetRotationMatrix()
+        {
+            return new RotationMatrix((End - Begin).Angle());
+        }
+
+        private TransformationMatrix GetScaleMatrix()
+        {
+            return new ScaleMatrix((End-Begin).Length);
         }
 
         #region Equality members
@@ -47,23 +54,31 @@ namespace Pifagor.Geometry
             return Equals((Segment) obj);
         }
 
-        [ExcludeFromCodeCoverage]
         public override int GetHashCode()
         {
             unchecked
             {
-                return (Begin.GetHashCode() *397) ^ End.GetHashCode();
+                return ((Begin.GetHashCode() *397) ^ End.GetHashCode());
             }
+        }
+
+        public static bool operator ==(Segment left, Segment right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Segment left, Segment right)
+        {
+            return !Equals(left, right);
         }
 
         #endregion
 
-        #region Formatting members
+        #region Formattin members 
 
-        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            return $"Begin: {Begin}, End: {End}";
+            return $"{Begin} - {End}";
         }
 
         #endregion

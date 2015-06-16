@@ -30,5 +30,20 @@ namespace Pifagor.Geometry
             var l = vector.Length;
             return Utils.IsEquals(l, 0) ? Vector.Zero : new Vector(vector.X / l, vector.Y / l);
         }
+
+        public static TransformationMatrix GetBaseVectorTransformation(this Vector b)
+        {
+            return GetBaseVectorTransformation(b.X, b.Y);
+        }
+
+        public static TransformationMatrix GetBaseVectorTransformation(double x, double y)
+        {
+            var vector = new Vector(x, y);
+
+            var rotate = new RotationMatrix(vector.Angle());
+            var scale = new ScaleMatrix(vector.Length);
+
+            return rotate*scale;
+        }
     }
 }
