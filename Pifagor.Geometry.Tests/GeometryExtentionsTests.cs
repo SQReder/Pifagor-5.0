@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Pifagor.Geometry.Tests
 {

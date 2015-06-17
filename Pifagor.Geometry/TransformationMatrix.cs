@@ -3,25 +3,31 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Pifagor.Geometry
 {
+    /// <summary>
+    /// Представляет матрицу трансформации в общем виде
+    /// </summary>
     public class TransformationMatrix
     {
-        protected readonly double[,] _data = new double[3, 3];
-
-        public static TransformationMatrix Noop
-            => new TransformationMatrix();
+        protected readonly double[,] Data = new double[3, 3];
 
         protected TransformationMatrix()
         {
             for (var i = 0; i != 3; ++i)
-                _data[i, i] = 1;
+                Data[i, i] = 1;
         }
 
         public double this[int row, int col]
         {
-            get { return _data[row, col]; }
-            set { _data[row, col] = value; }
+            get { return Data[row, col]; }
+            private set { Data[row, col] = value; }
         }
 
+        /// <summary>
+        /// Перемножает две матрицы трансформации
+        /// </summary>
+        /// <param name="left">Левая матрица</param>
+        /// <param name="right">Правая матрица</param>
+        /// <returns>Результат умножения матриц</returns>
         public static TransformationMatrix operator *(TransformationMatrix left, TransformationMatrix right)
         {
             var matrix = new TransformationMatrix();
@@ -39,17 +45,17 @@ namespace Pifagor.Geometry
             return matrix;
         }
 
-        #region Equaliry members
+        #region Equality members
 
         [ExcludeFromCodeCoverage]
-        protected bool Equals(TransformationMatrix other)
+        public bool Equals(TransformationMatrix other)
         {
-            if (!Utils.IsEquals(_data[0, 0], other._data[0, 0])) return false;
-            if (!Utils.IsEquals(_data[0, 1], other._data[0, 1])) return false;
-            if (!Utils.IsEquals(_data[1, 0], other._data[1, 0])) return false;
-            if (!Utils.IsEquals(_data[1, 1], other._data[1, 1])) return false;
-            if (!Utils.IsEquals(_data[2, 0], other._data[2, 0])) return false;
-            if (!Utils.IsEquals(_data[2, 1], other._data[2, 1])) return false;
+            if (!Utils.IsEquals(Data[0, 0], other.Data[0, 0])) return false;
+            if (!Utils.IsEquals(Data[0, 1], other.Data[0, 1])) return false;
+            if (!Utils.IsEquals(Data[1, 0], other.Data[1, 0])) return false;
+            if (!Utils.IsEquals(Data[1, 1], other.Data[1, 1])) return false;
+            if (!Utils.IsEquals(Data[2, 0], other.Data[2, 0])) return false;
+            if (!Utils.IsEquals(Data[2, 1], other.Data[2, 1])) return false;
 
             return true;
         }
@@ -59,14 +65,18 @@ namespace Pifagor.Geometry
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((TransformationMatrix) (object) (TransformationMatrix) obj);
+            if (GetType() != obj.GetType())
+            {
+                if (!obj.GetType().IsSubclassOf(typeof(TransformationMatrix)))
+                    return false;                
+            }
+            return Equals((TransformationMatrix)obj);
         }
 
         [ExcludeFromCodeCoverage]
         public override int GetHashCode()
         {
-            return _data?.GetHashCode() ?? 0;
+            return Data?.GetHashCode() ?? 0;
         }
 
         [ExcludeFromCodeCoverage]
@@ -89,34 +99,40 @@ namespace Pifagor.Geometry
         public override string ToString()
         {
             return
-                $"R0: ({Utils.Format(_data[0, 0])},{Utils.Format(_data[0, 1])}), R1: ({Utils.Format(_data[1, 0])},{Utils.Format(_data[1, 1])}), TX: {Utils.Format(_data[2, 0])}, TY: {Utils.Format(_data[2, 1])}";
+                $"R0: ({Utils.Format(Data[0, 0])},{Utils.Format(Data[0, 1])}), R1: ({Utils.Format(Data[1, 0])},{Utils.Format(Data[1, 1])}), TX: {Utils.Format(Data[2, 0])}, TY: {Utils.Format(Data[2, 1])}";
         }
 
         #endregion
-
-        public Vector Apply(Vector vector)
-        {
-            return vector * this;
-        }
     }
 
+    /// <summary>
+    /// Матрица переноса
+    /// </summary>
     public class TranslationMatrix : TransformationMatrix
     {
-        public double TX
+        /// <summary>
+        /// Горизонтальный перенос
+        /// </summary>
+        private double TX
         {
-            get { return _data[2, 0]; }
-            set { _data[2, 0] = value; }
+            get { return Data[2, 0]; }
+            set { Data[2, 0] = value; }
         }
 
-        public double TY
+        /// <summary>
+        /// Вертикальный перенос
+        /// </summary>
+        private double TY
         {
-            get { return _data[2, 1]; }
-            set { _data[2, 1] = value; }
+            get { return Data[2, 1]; }
+            set { Data[2, 1] = value; }
         }
 
-        public TranslationMatrix(): this(1,1)
-        { }
-
+        /// <summary>
+        /// Создает матрицу переноса
+        /// </summary>
+        /// <param name="tx">Горизонтальный перенос</param>
+        /// <param name="ty">Вертикальный перенос</param>
         public TranslationMatrix(double tx, double ty) : base()
         {
                 TX = tx;
@@ -124,11 +140,15 @@ namespace Pifagor.Geometry
         }
     }
 
+    /// <summary>
+    /// Матрица вращения
+    /// </summary>
     public class RotationMatrix : TransformationMatrix
     {
-        public RotationMatrix() : this(0)
-        { }
-
+        /// <summary>
+        /// Создает матрицу вращения на указанный угол
+        /// </summary>
+        /// <param name="alpha">Угол вращения</param>
         public RotationMatrix(double alpha)
         {
             RotationMatrixBySinCos(Math.Sin(alpha), Math.Cos(alpha));
@@ -136,24 +156,33 @@ namespace Pifagor.Geometry
 
         private void RotationMatrixBySinCos(double sinalpha, double cosalpha)
         {
-            _data[0, 0] = cosalpha;
-            _data[0, 1] = sinalpha;
-            _data[1, 0] = -sinalpha;
-            _data[1, 1] = cosalpha;
+            Data[0, 0] = cosalpha;
+            Data[0, 1] = sinalpha;
+            Data[1, 0] = -sinalpha;
+            Data[1, 1] = cosalpha;
         }
     }
 
+    /// <summary>
+    /// Матрица масштабирования
+    /// </summary>
     public class ScaleMatrix : TransformationMatrix
     {
-        public ScaleMatrix(): this(1)
-        { }
-
+        /// <summary>
+        /// Создает матрицу масштабирования с неравными пропорциями
+        /// </summary>
+        /// <param name="kx">Горизонтальный масштаб</param>
+        /// <param name="ky">Вертикальный масштаб</param>
         public ScaleMatrix(double kx, double ky)
         {
-                _data[0,0] = kx;
-                _data[1,1] = ky;
+                Data[0,0] = kx;
+                Data[1,1] = ky;
         }
 
+        /// <summary>
+        /// Создает матрицу масштабирования с одинаковыми пропорциями
+        /// </summary>
+        /// <param name="k">Коэффицент масштабирования</param>
         public ScaleMatrix(double k):this(k,k)
         {}
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Pifagor.ClusterTree
 {
@@ -30,7 +31,7 @@ namespace Pifagor.ClusterTree
             return n - 1;
         }
 
-        internal static int GetFirstIndexOfLayer(int treeBase, int layer)
+        public static int GetFirstIndexOfLayer(int treeBase, int layer)
         {
             if (layer < 0)
                 throw new ArgumentOutOfRangeException(nameof(layer), layer, "Index must be greater or equal zero");
@@ -47,19 +48,33 @@ namespace Pifagor.ClusterTree
             return sum + 1;
         }
 
-        public static int[] GetPathToIndex(int treeBase, int index)
+        internal static List<int> ConvertNumberToBase(int treeBase, int x)
         {
-            var layerNumber = GetLayerNumber(treeBase, index);
-            var firstIndexOfLayer = GetFirstIndexOfLayer(treeBase, layerNumber);
-            var x = index - firstIndexOfLayer;
             var path = new List<int>();
-            while (x != 0)
+            do
             {
                 path.Add(x % treeBase);
                 x = x / treeBase;
             }
+            while (x != 0);
+
+            return path;
+        }
+
+        public static int[] GetPathToIndex(int treeBase, int index)
+        {
+            if (index == 0)
+                return new int[0];
+
+            var layerNumber = GetLayerNumber(treeBase, index);
+            var firstIndexOfLayer = GetFirstIndexOfLayer(treeBase, layerNumber);
+            var x = index - firstIndexOfLayer;
+            var path = ConvertNumberToBase(treeBase, x);
+
             while (path.Count < layerNumber)
-                path.Insert(0,0);
+                path.Add(0);
+
+            path.Reverse();
             return path.ToArray();
         }
     }

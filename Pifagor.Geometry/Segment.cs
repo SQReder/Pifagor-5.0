@@ -14,29 +14,11 @@
         public Segment TransformWith(Segment segment)
         {
             var translate = new TranslationMatrix(segment.Begin.X, segment.Begin.Y);
-            var tmBegin = segment.Begin.GetBaseVectorTransformation();
-            var tmEnd= segment.End.GetBaseVectorTransformation();
-            var tm = (segment.End - segment.Begin).GetBaseVectorTransformation();
+            var relativeVector = segment.End - segment.Begin;
+            var tm = relativeVector.GetBaseVectorTransformation()*translate;
             var begin = Begin*tm;
             var end = End*tm;
-            begin *= translate;
-            end *= translate;
             return new Segment(begin, end);
-        }
-
-        private TransformationMatrix GetTranslationMatrix()
-        {
-            return new TranslationMatrix(Begin.X, Begin.Y);
-        }
-
-        private TransformationMatrix GetRotationMatrix()
-        {
-            return new RotationMatrix((End - Begin).Angle());
-        }
-
-        private TransformationMatrix GetScaleMatrix()
-        {
-            return new ScaleMatrix((End-Begin).Length);
         }
 
         #region Equality members

@@ -4,6 +4,9 @@ using System.Drawing;
 
 namespace Pifagor.Geometry
 {
+    /// <summary>
+    /// Представляет точку на плоскости
+    /// </summary>
     public struct Vector
     {
         #region Contructors
@@ -18,13 +21,23 @@ namespace Pifagor.Geometry
 
         #region Public members
 
+        /// <summary>
+        /// Возвращает базовый вектор пространства (1, 0)
+        /// </summary>
         public static Vector Base => new Vector(1, 0);
+
+        /// <summary>
+        /// Возвращает нулевой вектор
+        /// </summary>
         public static Vector Zero => new Vector(0, 0);
 
         #endregion
 
         #region IVector members
 
+        /// <summary>
+        /// Возвращает длину вектора
+        /// </summary>
         public double Length => Math.Sqrt(X * X + Y * Y);
 
         public double X { get; private set; }

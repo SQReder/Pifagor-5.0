@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using NUnit.Framework;
 
 namespace Pifagor.Geometry.Tests
@@ -15,7 +14,7 @@ namespace Pifagor.Geometry.Tests
         }
 
         [Test]
-        public void AccumulateTransformations()
+        public void AccumulateTransformation_MakeSameResult_AsSequentalTransformations()
         {
             var a = new Segment(new Vector(1, 2), new Vector(3, 4));
             var b = new Segment(new Vector(5, 6), new Vector(9, 10));
@@ -27,6 +26,36 @@ namespace Pifagor.Geometry.Tests
             var expected = seg.TransformWith(a).TransformWith(b);
 
             Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void Test()
+        {
+            var a = new Vector(0,1);
+            var b = new Vector(0.5,1.5);
+            var c = new Vector(1,1);
+
+            var ab = new Segment(a,b);
+            var bc = new Segment(b,c);
+
+            var abab = ab.TransformWith(ab);
+            var ababab = ab.TransformWith(ab).TransformWith(ab);
+            var bcbc = bc.TransformWith(bc);
+            var bcbcbc = bc.TransformWith(bc).TransformWith(bc);
+
+            Assert.That(abab, Is.EqualTo(new Segment(new Vector(-0.5,1.5), new Vector(-0.5,2))), "abab failed");
+            Assert.That(ababab, Is.EqualTo(new Segment(new Vector(-1,1.5), new Vector(-1.25,1.75))), "ababab failed");
+            Assert.That(bcbc, Is.EqualTo(new Segment(new Vector(1.5,2), new Vector(1.5,1.5))), "bcbc failed");
+            Assert.That(bcbcbc, Is.EqualTo(new Segment(new Vector(2.25, 1.75), new Vector(2, 1.5))), "bcbcbc failed");
+
+            //var ab_bc = ab.TransformWith(bc);
+            var bc_ab = bc.TransformWith(ab);
+            var ab_bc_ab = ab.TransformWith(bc).TransformWith(ab);
+            //Assert.That(ab_bc, Is.EqualTo(new Segment(new Vector(-0.5, 2), new Vector(0,2))));
+            Assert.That(bc_ab, Is.EqualTo(new Segment(new Vector(1, 2), new Vector(1.5,2))));
+            Assert.That(ab_bc_ab, Is.EqualTo(new Segment(new Vector(-0.5,2.5), new Vector(-0.25, 2.75))));
+
+
         }
     }
 

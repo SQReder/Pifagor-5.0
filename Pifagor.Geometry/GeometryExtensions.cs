@@ -4,6 +4,11 @@ namespace Pifagor.Geometry
 {
     public static class GeometryExtensions
     {
+        /// <summary>
+        /// Позволяет получить угол между осью абсцисс и вектором
+        /// </summary>
+        /// <param name="vector">Вектор</param>
+        /// <returns>Угол между осью абсцисс и вектором</returns>
         public static double Angle(this Vector vector)
         {
             double a;
@@ -25,17 +30,34 @@ namespace Pifagor.Geometry
             return a;
         }
 
+        /// <summary>
+        /// Позволяет получить нормаль вектора
+        /// </summary>
+        /// <param name="vector">Вектор для которого берется нормаль</param>
+        /// <returns>Нормаль переданного вектора</returns>
         public static Vector Unit(this Vector vector)
         {
             var l = vector.Length;
             return Utils.IsEquals(l, 0) ? Vector.Zero : new Vector(vector.X / l, vector.Y / l);
         }
 
+        /// <summary>
+        /// Позволяет получить матрицу преобразования вектора (1,0) в указанный вектор
+        /// </summary>
+        /// <param name="b">Вектор</param>
+        /// <returns>Матрица преобразования вектора (1 0) в указанный</returns>
+        /// <seealso cref="GetBaseVectorTransformation(double, double)"/>
         public static TransformationMatrix GetBaseVectorTransformation(this Vector b)
         {
             return GetBaseVectorTransformation(b.X, b.Y);
         }
 
+        /// <summary>
+        /// Позволяет получить матрицу преобразования вектора (1,0) в вектор к указанной точке
+        /// </summary>
+        /// <param name="x">Координата по горизонтали</param>
+        /// <param name="y">Координата по вертикали</param>
+        /// <returns>Матрица преобразования вектора (1 0) в вектор к указанной точке</returns>
         public static TransformationMatrix GetBaseVectorTransformation(double x, double y)
         {
             var vector = new Vector(x, y);
