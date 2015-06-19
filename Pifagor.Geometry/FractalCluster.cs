@@ -3,14 +3,12 @@ using System.Collections.Generic;
 
 namespace Pifagor.Geometry
 {
-    public struct FractalCluster: IReadOnlyList<Segment>
+    public class FractalCluster: IReadOnlyList<Segment>
     {
-        private List<Segment> _segments;
+        private readonly List<Segment> _segments = new List<Segment>();
 
         public void Add(Segment v)
         {
-            if (_segments == null)
-                _segments = new List<Segment>();
             _segments.Add(v);
         }
 

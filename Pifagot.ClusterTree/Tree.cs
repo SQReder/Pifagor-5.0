@@ -1,78 +1,80 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
+using System.Linq;
+using Pifagor.Geometry;
 
 namespace Pifagor.ClusterTree
 {
-    public class Tree<T>: CheckedDisposable
+    public class Node: IDisposable
     {
-        private List<Tree<T>> _children = new List<Tree<T>>();
-
-        public Tree(T data)
+        public Node(int key)
         {
-            Data = data;
+            Key = key;
+            Value = null;
+            ChildNodes = new List<Node>();
         }
 
-        public T Data { get; set; }
-        public Tree<T> Parent { get; private set; }
-        public IReadOnlyList<Tree<T>> Children => _children;
+        public int Key { get; }
+        public FractalCluster Value { get; set; }
 
-        /// <summary>
-        /// Присоединяет указанное дерево к текущему
-        /// </summary>
-        /// <param name="child"></param>
-        public void Attach(Tree<T> child)
+        public readonly List<Node> ChildNodes;
+
+        public void Dispose()
         {
-            _children.Add(child);
-            child.Parent = this;
-        }
-
-        /// <summary>
-        /// Отсоединяет указанное дерево от текущего
-        /// </summary>
-        /// <param name="tree">Дерево для отсоединения</param>
-        public void Detach(Tree<T> tree)
-        {
-            if (_children.Remove(tree))
-                tree.Parent = null;
-        }
-
-        /// <summary>
-        /// Обходит дерево в глубину и возвращает первый узел дерева, для которого выполняется предикат
-        /// </summary>
-        /// <param name="predicate">Предикат определяющий подходят ли данные в узле</param>
-        /// <returns>Первый узел, для которого выполнился предикат, или null если такого не нашлось</returns>
-        public Tree<T> Find(Predicate<T> predicate)
-        {
-            if (predicate(Data))
-                return this;
-
-            foreach (var child in _children)
+            foreach (var node in ChildNodes)
             {
-                var value = child.Find(predicate);
-                if (value != null)
-                    return value;
+                node.Dispose();
+            }
+            ChildNodes.Clear();
+        }
+    }
+
+    class Tree : IDisposable
+    {
+        private readonly Node _root = new Node(0);
+
+        public void Insert(IEnumerable<int> path, FractalCluster value)
+        {
+            var enumerator = path.GetEnumerator();
+            var current = _root;
+            while (enumerator.MoveNext())
+            {
+                var key = enumerator.Current;
+                var found = current.ChildNodes.FirstOrDefault(n => n.Key == key);
+                if (found == null)
+                {
+                    found = new Node(key);
+                    current.ChildNodes.Add(found);
+                }
+                current = found;
+            }
+            current.Value = value;
+        }
+
+        public Node Find(IEnumerable<int> path)
+        {
+            var enumerator = path.GetEnumerator();
+            var current = _root;
+            while (enumerator.MoveNext())
+            {
+                var key = enumerator.Current;
+                var node = current.ChildNodes.FirstOrDefault(n => n.Key == key);
+                if (node != null)
+                {
+                    current = node;
+                }
+                else
+                {
+                    return null;
+                }
             }
 
-            return null;
+            return current;
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
-            base.Dispose();
-            foreach (var child in _children)
-            {
-                child.Dispose();
-            }
-        }
-
-        public void Traverse(Action<Tree<T>> action)
-        {
-            action(this);
-
-            foreach (var child in _children)
-            {
-                child.Traverse(action);
-            }
+            _root.Dispose();
         }
     }
 }

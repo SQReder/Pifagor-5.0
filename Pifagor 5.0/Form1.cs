@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Windows.Forms;
 using Pifagor.ClusterTree;
 using Pifagor.Geometry;
@@ -10,8 +12,8 @@ namespace SQReder.Pifagor
     public partial class Form1 : Form
     {
         private FractalCluster _cluster;
-        private readonly List<FractalCluster> _clusters = new List<FractalCluster>();
-        private int count;
+        private List<FractalCluster> _clusters = new List<FractalCluster>();
+        private int _count;
 
         public Form1()
         {
@@ -30,43 +32,20 @@ namespace SQReder.Pifagor
                 new Segment(new Vector(0.5, 1.5), new Vector(1, 1)),
                 new Segment(new Vector(0, 1), new Vector(0.5, 1.5))
             };
-
-            Populate(_cluster, 4);
-        }
-
-        private void Populate(FractalCluster cluster, int d)
-        {
-            _clusters.Clear();
-            var treeBase = cluster.Count;
-            var lastIndex = ClusterMath.GetFirstIndexOfLayer(treeBase, d + 1);
-            for (var i = 0; i != lastIndex; ++i)
-            {
-                var pathToIndex = ClusterMath.GetPathToIndex(treeBase, i);
-                _clusters.Add(Transform(cluster, pathToIndex));
-            }
-        }
-
-        private FractalCluster Transform(FractalCluster cl, int[] pathToIndex)
-        {
-            var c = cl;
-            for (int i = 0; i != pathToIndex.Length; ++i)
-            {
-                var idx = pathToIndex[i];
-                var segment = cl[idx];
-                c = c.TransformWith(segment);
-            }
-            return c;
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            e.Graphics.FillRectangle(SystemBrushes.Control, new Rectangle(0, 0, 1000, 1000));
+            var g = e.Graphics;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            g.FillRectangle(SystemBrushes.Control, new Rectangle(0, 0, 1000, 1000));
             foreach (var cluster in _clusters)
             {
                 foreach (var segment in cluster)
                 {
-                    DrawSegment(e.Graphics, segment, 100);
+                    DrawSegment(g, segment, 100);
                 }
             }
         }
@@ -84,8 +63,8 @@ namespace SQReder.Pifagor
 
         private void button1_Click(object sender, EventArgs e)
         {
-            count++;
-            Populate(_cluster, count);
+            _count++;
+            _clusters = CachedMath.Populate(_cluster, _count).ToList();
             Invalidate();
         }
     }

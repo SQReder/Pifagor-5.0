@@ -133,7 +133,7 @@ namespace Pifagor.Geometry
         /// </summary>
         /// <param name="tx">Горизонтальный перенос</param>
         /// <param name="ty">Вертикальный перенос</param>
-        public TranslationMatrix(double tx, double ty) : base()
+        public TranslationMatrix(double tx, double ty)
         {
                 TX = tx;
                 TY = ty;
