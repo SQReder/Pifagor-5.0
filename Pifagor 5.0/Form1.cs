@@ -11,9 +11,9 @@ namespace SQReder.Pifagor
 {
     public partial class Form1 : Form
     {
-        private FractalCluster _cluster;
         private List<FractalCluster> _clusters = new List<FractalCluster>();
         private int _count;
+        private CachedFractal _fractal;
 
         public Form1()
         {
@@ -27,11 +27,13 @@ namespace SQReder.Pifagor
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            _cluster = new FractalCluster
+            var cluster = new FractalCluster
             {
                 new Segment(new Vector(0.5, 1.5), new Vector(1, 1)),
                 new Segment(new Vector(0, 1), new Vector(0.5, 1.5))
             };
+
+            _fractal = new CachedFractal(cluster);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -64,7 +66,7 @@ namespace SQReder.Pifagor
         private void button1_Click(object sender, EventArgs e)
         {
             _count++;
-            _clusters = CachedMath.Populate(_cluster, _count).ToList();
+            _clusters = _fractal.ProcessLevels(_count).ToList();
             Invalidate();
         }
     }

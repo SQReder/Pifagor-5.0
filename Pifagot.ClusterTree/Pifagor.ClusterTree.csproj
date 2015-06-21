@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CachedMath.cs" />
+    <Compile Include="CachedFractal.cs" />
     <Compile Include="CheckedDisposable.cs" />
     <Compile Include="ClusterCache.cs" />
     <Compile Include="ClusterMath.cs" />
