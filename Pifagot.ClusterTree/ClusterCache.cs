@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Pifagor.Geometry;
 
@@ -6,28 +7,28 @@ namespace Pifagor.ClusterTree
 {
     interface IClusterCache
     {
-        void Add(IEnumerable<int> path, FractalCluster cluster);
-        FractalCluster Find(IEnumerable<int> path);
+        void Add(int[] path, FractalCluster cluster);
+        FractalCluster Find(int[] path);
         void Clear();
-        bool Has(IEnumerable<int> path);
+        bool Has(int[] path);
     }
 
     class DictionaryClusterCache : IClusterCache
     {
-        private Dictionary<string, FractalCluster> _dictionary = new Dictionary<string, FractalCluster>();
+        private readonly Dictionary<string, FractalCluster> _dictionary = new Dictionary<string, FractalCluster>();
 
-        private static string MakeKey(IEnumerable<int> path)
+        private static string MakeKey(int[] path)
         {
-            return string.Join("", path.Select(x => x.ToString()).ToArray());
+            return string.Join("", path);
         }
 
-        public void Add(IEnumerable<int> path, FractalCluster cluster)
+        public void Add(int[] path, FractalCluster cluster)
         {
             var key = MakeKey(path);
             _dictionary.Add(key, cluster);
         }
 
-        public FractalCluster Find(IEnumerable<int> path)
+        public FractalCluster Find(int[] path)
         {
             FractalCluster value;
             var result = _dictionary.TryGetValue(MakeKey(path), out value);
@@ -39,7 +40,7 @@ namespace Pifagor.ClusterTree
             _dictionary.Clear();
         }
 
-        public bool Has(IEnumerable<int> path)
+        public bool Has(int[] path)
         {
             var key = MakeKey(path);
             return _dictionary.ContainsKey(key);
