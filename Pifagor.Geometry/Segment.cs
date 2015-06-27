@@ -1,9 +1,11 @@
-﻿namespace Pifagor.Geometry
+﻿using System.Drawing;
+
+namespace Pifagor.Geometry
 {
-    public class Segment
+    public class Segment: IDrawable
     {
-        public Vector Begin { get; }
-        public Vector End { get; }
+        private Vector Begin { get; }
+        private Vector End { get; }
 
         public Segment(Vector begin, Vector end)
         {
@@ -20,7 +22,7 @@
             var end = End*tm;
             return new Segment(begin, end);
         }
-
+        
         #region Equality members
 
         protected bool Equals(Segment other)
@@ -52,6 +54,15 @@
         public static bool operator !=(Segment left, Segment right)
         {
             return !Equals(left, right);
+        }
+
+        #endregion
+
+        #region IDrawable members
+
+        public void Draw(Graphics g, Pen pen)
+        {
+            g.DrawLine(pen, Begin, End);
         }
 
         #endregion

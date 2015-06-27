@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Pifagor.Geometry
 {
-    public class FractalCluster: IReadOnlyList<Segment>
+    public class FractalCluster: IReadOnlyList<Segment>, IDrawable
     {
         private readonly List<Segment> _segments = new List<Segment>();
 
@@ -12,9 +13,18 @@ namespace Pifagor.Geometry
             _segments.Add(v);
         }
 
+        public FractalCluster TransformWith(Segment seg)
+        {
+            var result = new FractalCluster();
+            foreach (var segment in _segments)
+            {
+                result.Add(segment.TransformWith(seg));
+            }
+            return result;
+        }
+
         public Segment this[int i] => _segments[i];
         public int Count => _segments.Count;
-
 
         public IEnumerator<Segment> GetEnumerator()
         {
@@ -26,14 +36,12 @@ namespace Pifagor.Geometry
             return GetEnumerator();
         }
 
-        public FractalCluster TransformWith(Segment seg)
+        public void Draw(Graphics g, Pen pen)
         {
-            var result = new FractalCluster();
             foreach (var segment in _segments)
             {
-                result.Add(segment.TransformWith(seg));
+                segment.Draw(g, pen);
             }
-            return result;
         }
     }
 }

@@ -43,24 +43,12 @@ namespace SQReder.Pifagor
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.SmoothingMode = SmoothingMode.HighQuality;
             g.FillRectangle(SystemBrushes.Control, new Rectangle(0, 0, 1000, 1000));
+            var seg = new Segment(new Vector(500, 0), new Vector(600, 0));
             foreach (var cluster in _clusters)
             {
-                foreach (var segment in cluster)
-                {
-                    DrawSegment(g, segment, 100);
-                }
+                var fc = cluster.TransformWith(seg);
+                fc.Draw(g, Pens.Black);
             }
-        }
-
-        private static void DrawSegment(Graphics g, Segment segment, int scale)
-        {
-            var size = new Size(500, 000);
-            PointF begin = segment.Begin * scale;
-            PointF end = segment.End * scale;
-
-            var pen = new Pen(Color.Black);
-
-            g.DrawLine(pen, begin + size, end + size);
         }
 
         private void button1_Click(object sender, EventArgs e)
