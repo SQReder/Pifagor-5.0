@@ -17,7 +17,7 @@ namespace Pifagor.ClusterTree
 
         public IEnumerable<FractalCluster> ProcessLevels(int d)
         {
-            var treeBase = _fractal.Count;
+            var treeBase = _fractal.Segments.Count;
             var lastIndex = ClusterMath.GetFirstIndexOfLayer(treeBase, d + 1);
             var result = new List<FractalCluster>();
             for (var i = 0; i != lastIndex; ++i)
@@ -41,7 +41,7 @@ namespace Pifagor.ClusterTree
             for (var index = 0; index < transforms.Length; index++)
             {
                 var i = transforms[index];
-                var segment = _fractal[i];
+                var segment = _fractal.Segments[i];
                 transformed = transformed.TransformWith(segment);
             }
             _cache.Add(path, transformed);

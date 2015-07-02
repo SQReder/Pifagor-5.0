@@ -4,14 +4,23 @@ using System.Drawing;
 
 namespace Pifagor.Geometry
 {
-    public class FractalCluster: IReadOnlyList<Segment>, IDrawable
+    public class FractalCluster: IDrawable
     {
         private readonly List<Segment> _segments = new List<Segment>();
+        private readonly List<Segment> _decoratingSegments = new List<Segment>(); 
 
         public void Add(Segment v)
         {
             _segments.Add(v);
         }
+
+        private void AddDecore(Segment segment)
+        {
+            _decoratingSegments.Add(segment);
+        }
+
+        public List<Segment> Segments => _segments;
+        public List<Segment> Decore => _decoratingSegments;
 
         public FractalCluster TransformWith(Segment seg)
         {
@@ -20,25 +29,21 @@ namespace Pifagor.Geometry
             {
                 result.Add(segment.TransformWith(seg));
             }
+            foreach (var decoratingSegment in _decoratingSegments)
+            {
+                result.AddDecore(decoratingSegment.TransformWith(seg));
+            }
             return result;
-        }
-
-        public Segment this[int i] => _segments[i];
-        public int Count => _segments.Count;
-
-        public IEnumerator<Segment> GetEnumerator()
-        {
-            return _segments.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         public void Draw(Graphics g, Pen pen)
         {
             foreach (var segment in _segments)
+            {
+                segment.Draw(g, pen);
+            }
+
+            foreach (var segment in _decoratingSegments)
             {
                 segment.Draw(g, pen);
             }

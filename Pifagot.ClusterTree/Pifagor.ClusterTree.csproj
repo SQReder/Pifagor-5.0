@@ -44,7 +44,6 @@
     <Compile Include="CheckedDisposable.cs" />
     <Compile Include="ClusterCache.cs" />
     <Compile Include="ClusterMath.cs" />
-    <Compile Include="Tree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

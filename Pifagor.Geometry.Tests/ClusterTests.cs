@@ -9,7 +9,7 @@ namespace Pifagor.Geometry.Tests
         public void CanBeConstructed()
         {
             var cluster = new FractalCluster();
-            Assert.That(cluster.Count, Is.EqualTo(0));
+            Assert.That(cluster.Segments.Count, Is.EqualTo(0));
         }
     }
 }

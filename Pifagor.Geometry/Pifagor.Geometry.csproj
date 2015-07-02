@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FractalCluster.cs" />
+    <Compile Include="IDrawable.cs" />
     <Compile Include="Segment.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="GeometryExtensions.cs" />

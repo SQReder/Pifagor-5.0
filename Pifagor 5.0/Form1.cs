@@ -29,8 +29,16 @@ namespace SQReder.Pifagor
         {
             var cluster = new FractalCluster
             {
-                new Segment(new Vector(0.5, 1.5), new Vector(1, 1)),
-                new Segment(new Vector(0, 1), new Vector(0.5, 1.5))
+                Segments = { 
+                    new Segment(new Vector(0.5, 1.5), new Vector(1, 1)),
+                    new Segment(new Vector(0, 1), new Vector(0.5, 1.5))
+                },
+                Decore =
+                {
+                    new Segment(new Vector(0,0), new Vector(0,1)),
+                    new Segment(new Vector(1,0), new Vector(1,1)),
+                    new Segment(new Vector(0,1), new Vector(1,1)),
+                }
             };
 
             _fractal = new CachedFractal(cluster);
@@ -39,11 +47,15 @@ namespace SQReder.Pifagor
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+
             var g = e.Graphics;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.SmoothingMode = SmoothingMode.HighQuality;
+
             g.FillRectangle(SystemBrushes.Control, new Rectangle(0, 0, 1000, 1000));
-            var seg = new Segment(new Vector(500, 0), new Vector(600, 0));
+
+            // scale segment
+            var seg = new Segment(new Vector(650, 0), new Vector(750, 0));
             foreach (var cluster in _clusters)
             {
                 var fc = cluster.TransformWith(seg);
