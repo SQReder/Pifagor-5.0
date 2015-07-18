@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Pifagor.ClusterTree;
 using Pifagor.Geometry;
+using Pifagor.Graphics;
 
 namespace SQReder.Pifagor
 {
     public partial class Form1 : Form
     {
-        private List<FractalCluster> _clusters = new List<FractalCluster>();
         private int _count;
         private CachedFractal _fractal;
 
@@ -40,45 +41,30 @@ namespace SQReder.Pifagor
                 }
             };
 
-            var fw = new FractalWorker(cluster);
             _fractal = new CachedFractal(cluster);
         }
 
-        private void DrawFractalBuffered(List<FractalCluster> clusters)
+        private void DrawFractalBuffered(Bitmap bitmap)
         {
             var context = BufferedGraphicsManager.Current;
             var myBuffer = context.Allocate(CreateGraphics(), DisplayRectangle);
 
-            DrawFractal(myBuffer.Graphics, clusters);
+            var g = myBuffer.Graphics;
+            g.FillRectangle(SystemBrushes.Control, DisplayRectangle);
+            g.DrawImageUnscaled(bitmap, 0, 0);
 
             myBuffer.Render();
             myBuffer.Dispose();
         }
 
-        protected void DrawFractal(Graphics g, List<FractalCluster> clusters)
-        {
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.SmoothingMode = SmoothingMode.HighQuality;
-
-            g.FillRectangle(SystemBrushes.Control, DisplayRectangle);
-
-            // scale segment
-            var seg = new Segment(new Vector(650, 0), new Vector(750, 0));
-            foreach (var cluster in clusters)
-            {
-                var fc = cluster.TransformWith(seg);
-                fc.Draw(g, Pens.Black);
-            }            
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             _count++;
-            _fractal.ProcessLevels(_count).ContinueWith(task =>
-            {
-                _clusters = task.Result;
-                DrawFractalBuffered(_clusters);
-            });
+            
+            _fractal
+                .ProcessLevels(_count)
+                .ContinueWith(task => RenderEngine.Render(task.Result).Result, TaskContinuationOptions.OnlyOnRanToCompletion)
+                .ContinueWith(task => DrawFractalBuffered(task.Result));
         }
     }
 }

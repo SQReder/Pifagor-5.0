@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7223E56F-A82E-4379-90E2-8EA843F5FAEA}</ProjectGuid>
+    <ProjectGuid>{B0157986-F7F4-476B-930C-D507EC645C02}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Pifagor.ClusterTree</RootNamespace>
-    <AssemblyName>Pifagor.ClusterTree</AssemblyName>
+    <RootNamespace>Pifagor.Graphics</RootNamespace>
+    <AssemblyName>Pifagor.Graphics</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,15 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CachedFractal.cs" />
-    <Compile Include="CheckedDisposable.cs" />
-    <Compile Include="ClusterCache.cs" />
-    <Compile Include="ClusterMath.cs" />
+    <Compile Include="RenderEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pifagor.Geometry\Pifagor.Geometry.csproj">
-      <Project>{a4dd12e4-6a3c-4df4-b332-f1a104c21421}</Project>
+      <Project>{A4DD12E4-6A3C-4DF4-B332-F1A104C21421}</Project>
       <Name>Pifagor.Geometry</Name>
     </ProjectReference>
   </ItemGroup>
