@@ -53,6 +53,10 @@
       <Project>{A4DD12E4-6A3C-4DF4-B332-F1A104C21421}</Project>
       <Name>Pifagor.Geometry</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Pifagot.ClusterTree\Pifagor.ClusterTree.csproj">
+      <Project>{7223e56f-a82e-4379-90e2-8ea843f5faea}</Project>
+      <Name>Pifagor.ClusterTree</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClusterTests.cs" />

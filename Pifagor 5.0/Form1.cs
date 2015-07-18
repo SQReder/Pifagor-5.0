@@ -1,18 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
+using System.Threading;
 using System.Windows.Forms;
 using Pifagor.ClusterTree;
 using Pifagor.Geometry;
+using Pifagor.Graphics;
 
 namespace SQReder.Pifagor
 {
     public partial class Form1 : Form
     {
-        private List<FractalCluster> _clusters = new List<FractalCluster>();
         private int _count;
         private CachedFractal _fractal;
+        private readonly RenderEngine _renderEngine;
+        private CancellationTokenSource _cts;
 
         public Form1()
         {
@@ -22,6 +23,7 @@ namespace SQReder.Pifagor
                 ControlStyles.AllPaintingInWmPaint |
                 ControlStyles.OptimizedDoubleBuffer,
                 true);
+            _renderEngine = new RenderEngine(new Size(1920, 1080));
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -40,45 +42,49 @@ namespace SQReder.Pifagor
                 }
             };
 
-            var fw = new FractalWorker(cluster);
             _fractal = new CachedFractal(cluster);
         }
 
-        private void DrawFractalBuffered(List<FractalCluster> clusters)
+        private void DrawFractalBuffered(Bitmap bitmap)
         {
             var context = BufferedGraphicsManager.Current;
             var myBuffer = context.Allocate(CreateGraphics(), DisplayRectangle);
 
-            DrawFractal(myBuffer.Graphics, clusters);
+            var g = myBuffer.Graphics;
+            g.FillRectangle(SystemBrushes.Control, DisplayRectangle);
+            g.DrawImageUnscaled(bitmap, 0, 0);
 
             myBuffer.Render();
             myBuffer.Dispose();
         }
 
-        protected void DrawFractal(Graphics g, List<FractalCluster> clusters)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.SmoothingMode = SmoothingMode.HighQuality;
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
 
-            g.FillRectangle(SystemBrushes.Control, DisplayRectangle);
+            _count++;
 
-            // scale segment
-            var seg = new Segment(new Vector(650, 0), new Vector(750, 0));
-            foreach (var cluster in clusters)
+            var clusters = _fractal.ProcessLevels(_count);
+            try
             {
-                var fc = cluster.TransformWith(seg);
-                fc.Draw(g, Pens.Black);
-            }            
+                await _renderEngine.Render(_cts.Token, clusters);
+            }
+            catch (OperationCanceledException ex)
+            {
+                Text = ex.Message;
+            }
+
+            DrawFractalBuffered(_renderEngine.LastRendered);
+
+            GC.Collect();
+            _cts = null;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
         {
-            _count++;
-            _fractal.ProcessLevels(_count).ContinueWith(task =>
-            {
-                _clusters = task.Result;
-                DrawFractalBuffered(_clusters);
-            });
+            base.OnPaint(e);
+            e.Graphics.DrawImageUnscaled(_renderEngine.LastRendered, 0, 0);
         }
     }
 }
