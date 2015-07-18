@@ -63,7 +63,7 @@ namespace SQReder.Pifagor
             _count++;
 
             var cts = new CancellationTokenSource();
-            var renderEngine = new RenderEngine();
+            var renderEngine = new RenderEngine(DisplayRectangle.Size);
 
             var clusters = _fractal.ProcessLevels(_count);
             renderEngine.StartRender();
