@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Pifagor.Geometry;
 
 namespace Pifagor.ClusterTree
 {
@@ -75,6 +77,27 @@ namespace Pifagor.ClusterTree
 
             path.Reverse();
             return path.ToArray();
+        }
+
+        public static bool IsConvergent(FractalCluster cluster)
+        {
+            return !cluster.Segments.Any(segment => segment.Length >= 1);
+        }
+
+        public static double GetMaxLinearSize(FractalCluster cluster)
+        {
+            var segments = new List<Segment>();
+            segments.AddRange(cluster.Segments);
+            segments.AddRange(cluster.Decore);
+
+            var max = 0.0;
+            foreach (var first in segments)
+            {
+                var begin = first.Begin.Length;
+                var end = first.End.Length;
+                max = Math.Max(max, Math.Max(begin, end));
+            }
+            return max;
         }
     }
 }

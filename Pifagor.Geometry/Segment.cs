@@ -4,13 +4,19 @@ namespace Pifagor.Geometry
 {
     public class Segment: IDrawable
     {
-        private Vector Begin { get; }
-        private Vector End { get; }
+        public Vector Begin { get; }
+        public Vector End { get; }
+        public double Length { get; }
+
+        public Segment(double x1, double y1, double x2, double y2)
+            : this(new Vector(x1, y1), new Vector(x2, y2))
+        { }
 
         public Segment(Vector begin, Vector end)
         {
             Begin = begin;
             End = end;
+            Length = Begin.Distance(End);
         }
 
         public Segment TransformWith(Segment segment)

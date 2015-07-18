@@ -25,7 +25,7 @@ namespace Pifagor.ClusterTree
         public void Add(int[] path, FractalCluster cluster)
         {
             var key = MakeKey(path);
-            _dictionary.Add(key, cluster);
+            _dictionary[key] = cluster;
         }
 
         public FractalCluster Find(int[] path)

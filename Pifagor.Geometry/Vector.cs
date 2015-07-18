@@ -39,6 +39,12 @@ namespace Pifagor.Geometry
         /// Возвращает длину вектора
         /// </summary>
         public double Length => Math.Sqrt(X * X + Y * Y);
+        public double Distance(Vector v)
+        {
+            var x = v.X - X;
+            var y = v.Y - Y;
+            return Math.Sqrt(x*x + y*y);
+        }
 
         public double X { get; private set; }
         public double Y { get; private set; }

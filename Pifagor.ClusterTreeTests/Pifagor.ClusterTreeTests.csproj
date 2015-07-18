@@ -55,6 +55,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ClusterMath.Space.cs" />
     <Compile Include="ClusterMath.GetFirstLayerIndexTestCase.cs" />
     <Compile Include="ClusterMath.GetLayerNumberTestCase.cs" />
     <Compile Include="CheckedDisposableTest.cs" />

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Windows.Forms;
 using Pifagor.ClusterTree;
 using Pifagor.Geometry;
@@ -41,33 +40,45 @@ namespace SQReder.Pifagor
                 }
             };
 
+            var fw = new FractalWorker(cluster);
             _fractal = new CachedFractal(cluster);
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        private void DrawFractalBuffered(List<FractalCluster> clusters)
         {
-            base.OnPaint(e);
+            var context = BufferedGraphicsManager.Current;
+            var myBuffer = context.Allocate(CreateGraphics(), DisplayRectangle);
 
-            var g = e.Graphics;
+            DrawFractal(myBuffer.Graphics, clusters);
+
+            myBuffer.Render();
+            myBuffer.Dispose();
+        }
+
+        protected void DrawFractal(Graphics g, List<FractalCluster> clusters)
+        {
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.SmoothingMode = SmoothingMode.HighQuality;
 
-            g.FillRectangle(SystemBrushes.Control, new Rectangle(0, 0, 1000, 1000));
+            g.FillRectangle(SystemBrushes.Control, DisplayRectangle);
 
             // scale segment
             var seg = new Segment(new Vector(650, 0), new Vector(750, 0));
-            foreach (var cluster in _clusters)
+            foreach (var cluster in clusters)
             {
                 var fc = cluster.TransformWith(seg);
                 fc.Draw(g, Pens.Black);
-            }
+            }            
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             _count++;
-            _clusters = _fractal.ProcessLevels(_count).ToList();
-            Invalidate();
+            _fractal.ProcessLevels(_count).ContinueWith(task =>
+            {
+                _clusters = task.Result;
+                DrawFractalBuffered(_clusters);
+            });
         }
     }
 }
