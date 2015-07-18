@@ -99,5 +99,25 @@ namespace Pifagor.ClusterTree
             }
             return max;
         }
+
+        public struct Range
+        {
+            public int Skip;
+            public int Take;
+        }
+
+        public static IEnumerable<Range> MakeRanges(int count, int takeBy)
+        {
+            var ranges = new List<Range>();
+            for (var skip = 0; skip < count; skip += takeBy)
+            {
+                var take = takeBy;
+                if (skip + take > count)
+                    take = count - skip;
+
+                ranges.Add(new Range {Skip = skip, Take = take});
+            }
+            return ranges;
+        }
     }
 }

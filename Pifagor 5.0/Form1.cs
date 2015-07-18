@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Pifagor.ClusterTree;
 using Pifagor.Geometry;
@@ -15,6 +12,8 @@ namespace SQReder.Pifagor
     {
         private int _count;
         private CachedFractal _fractal;
+        private readonly RenderEngine _renderEngine;
+        private CancellationTokenSource _cts;
 
         public Form1()
         {
@@ -24,6 +23,7 @@ namespace SQReder.Pifagor
                 ControlStyles.AllPaintingInWmPaint |
                 ControlStyles.OptimizedDoubleBuffer,
                 true);
+            _renderEngine = new RenderEngine(new Size(1920, 1080));
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -58,18 +58,33 @@ namespace SQReder.Pifagor
             myBuffer.Dispose();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+
             _count++;
 
-            var cts = new CancellationTokenSource();
-            var renderEngine = new RenderEngine(DisplayRectangle.Size);
-
             var clusters = _fractal.ProcessLevels(_count);
-            renderEngine.StartRender();
-            renderEngine.Render(clusters);
-            renderEngine.EndRender();
-            DrawFractalBuffered(renderEngine.Result);
+            try
+            {
+                await _renderEngine.Render(_cts.Token, clusters);
+            }
+            catch (OperationCanceledException ex)
+            {
+                Text = ex.Message;
+            }
+
+            DrawFractalBuffered(_renderEngine.LastRendered);
+
+            GC.Collect();
+            _cts = null;
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            e.Graphics.DrawImageUnscaled(_renderEngine.LastRendered, 0, 0);
         }
     }
 }

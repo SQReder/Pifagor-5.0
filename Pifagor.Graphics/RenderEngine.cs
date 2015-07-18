@@ -3,88 +3,74 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Pifagor.ClusterTree;
 using Pifagor.Geometry;
 
 namespace Pifagor.Graphics
 {
     public class RenderEngine
     {
-        private struct Range
-        {
-            public int Skip;
-            public int Take;
-        }
-
-        private Bitmap _bitmap;
-        public bool RenderInProcess { get; private set; }
         private Size _ariaSize;
         private const int TakeBy = 1000;
+        private object _lock = new object();
+        private Bitmap _lastBitmap;
+
+        public Bitmap LastRendered 
+        {
+            get { return _lastBitmap; }
+            private set
+            {
+                lock (_lock)
+                {
+                    _lastBitmap = value;
+                }
+            }
+        }
 
         public RenderEngine(Size ariaSize)
         {
             _ariaSize = ariaSize;
+            _lastBitmap = new Bitmap(1, 1);
         }
 
-        public Bitmap Result
+        public Task Render(CancellationToken token, List<FractalCluster> clusters)
         {
-            get
+            return Task.Run(() => RenderMethod(token, clusters), token);
+        }
+
+        private void RenderMethod(CancellationToken token, List<FractalCluster> clusters)
+        {
+
+            var bitmap = new Bitmap(_ariaSize.Width, _ariaSize.Height);
+            var g = System.Drawing.Graphics.FromImage(bitmap);
+
+            var drawLock = new object();
+
+            var ranges = ClusterMath.MakeRanges(clusters.Count, TakeBy);
+            try
             {
-                if (RenderInProcess)
-                    throw new InvalidOperationException();
-                return _bitmap;
+                ranges.AsParallel()
+                    .AsOrdered()
+                    .WithCancellation(token)
+                    .WithMergeOptions(ParallelMergeOptions.NotBuffered)
+                    .Select(r => DrawPartial(clusters.GetRange(r.Skip, r.Take)))
+                    .ForAll(b =>
+                    {
+                        lock (drawLock)
+                        {
+                            g.DrawImageUnscaled(b, 0, 0);
+                        }
+                    });
+
+                _lastBitmap = bitmap;
             }
-        }
-
-        public void StartRender()
-        {
-            // todo lock
-            if (RenderInProcess)
-                throw new InvalidOperationException();
-            RenderInProcess = true;
-            _bitmap = new Bitmap(1000, 1000);
-
-        }
-
-        public void EndRender()
-        {
-            // todo lock
-            if (!RenderInProcess)
-                throw new InvalidOperationException();
-            RenderInProcess = false;
-        }
-
-        public void Render(List<FractalCluster> clusters)
-        {
-            if (!RenderInProcess)
-                throw new InvalidOperationException();
-            RenderMethod(clusters);
-        }
-
-        private void RenderMethod(List<FractalCluster> clusters)
-        {
-
-            var g = System.Drawing.Graphics.FromImage(_bitmap);
-
-            var ranges = MakeRanges(clusters.Count, TakeBy);
-            ranges.AsParallel().AsOrdered()
-                .Select(r => DrawPartial(clusters.GetRange(r.Skip, r.Take)))
-                .ForAll(b => g.DrawImageUnscaled(b, 0, 0));
-            
-            //DrawFractal(g, clusters);
-        }
-
-        private List<Range> MakeRanges(int count, int takeBy)
-        {
-            var ranges = new List<Range>();
-            for (var skip = 0; skip < count; skip += takeBy)
+            catch (OperationCanceledException e)
             {
-                var take = takeBy;
-                if (skip + take > count)
-                    take = count - skip;
-
-                ranges.Add(new Range {Skip = skip, Take = take});
+                _lastBitmap = new Bitmap(1,1);
+                throw;
             }
-            return ranges;
         }
 
         private Bitmap DrawPartial(List<FractalCluster> clusters)
