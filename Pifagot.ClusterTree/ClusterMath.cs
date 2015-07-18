@@ -100,12 +100,6 @@ namespace Pifagor.ClusterTree
             return max;
         }
 
-        public struct Range
-        {
-            public int Skip;
-            public int Take;
-        }
-
         public static IEnumerable<Range> MakeRanges(int count, int takeBy)
         {
             var ranges = new List<Range>();
