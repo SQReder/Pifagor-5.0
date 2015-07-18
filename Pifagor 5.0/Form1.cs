@@ -65,9 +65,9 @@ namespace SQReder.Pifagor
 
             _count++;
 
-            var clusters = _fractal.ProcessLevels(_count);
             try
             {
+                var clusters = await _fractal.ProcessLevels(_cts.Token, _count);
                 await _renderEngine.Render(_cts.Token, clusters);
             }
             catch (OperationCanceledException ex)
@@ -78,7 +78,6 @@ namespace SQReder.Pifagor
             DrawFractalBuffered(_renderEngine.LastRendered);
 
             GC.Collect();
-            _cts = null;
         }
 
         protected override void OnPaint(PaintEventArgs e)

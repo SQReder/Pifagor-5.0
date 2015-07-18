@@ -11,37 +11,28 @@ namespace Pifagor.ClusterTree
     {
         private readonly IClusterCache _cache = new DictionaryClusterCache();
         private readonly FractalCluster _fractal;
+        private readonly int _treeBase;
 
         public CachedFractal(FractalCluster fractal)
         {
             _fractal = fractal;
+            _treeBase = _fractal.Segments.Count;
         }
 
-        public List<FractalCluster> ProcessLevels(int d)
+        public Task<List<FractalCluster>> ProcessLevels(CancellationToken token, int d)
         {
-            var treeBase = _fractal.Segments.Count;
-            var lastIndex = ClusterMath.GetFirstIndexOfLayer(treeBase, d + 1);
-            var first = 0;
-            var last = lastIndex;
-            return GetValue(first, last);
-        }
-
-        private List<FractalCluster> GetValue(int first, int last)
-        {
-            var treeBase = _fractal.Segments.Count;
-            return GetFractalClustersByRange(first, last, treeBase);
-        }
-
-        private List<FractalCluster> GetFractalClustersByRange(int first, int last, int treeBase)
-        {
-            var result = new List<FractalCluster>();
-            for (var i = first; i != last; ++i)
+            return Task.Run(() =>
             {
-                var path = ClusterMath.GetPathToIndex(treeBase, i);
-                var cluster = Transform(path);
-                result.Add(cluster);
-            }
-            return result;
+                var lastIndex = ClusterMath.GetFirstIndexOfLayer(_treeBase, d + 1);
+                var ranges = ClusterMath.MakeRanges(lastIndex, 100);
+                return ranges.AsParallel().AsOrdered().WithCancellation(token)
+                    .SelectMany(r => ListClustersInRange(r, _treeBase)).ToList();
+            }, token);
+        }
+
+        private IEnumerable<FractalCluster> ListClustersInRange(Range range, int treeBase)
+        {
+            return range.Select(i => ClusterMath.GetPathToIndex(treeBase, i)).Select(Transform);
         }
 
         private FractalCluster Transform(int[] path)
@@ -53,12 +44,8 @@ namespace Pifagor.ClusterTree
             var tuple = GetPartialTransformed(_fractal, path);
             var transformed = tuple.Item1;
             var transforms = tuple.Item2;
-            for (var index = 0; index < transforms.Length; index++)
-            {
-                var i = transforms[index];
-                var segment = _fractal.Segments[i];
-                transformed = transformed.TransformWith(segment);
-            }
+            transformed = transforms.Select(i => _fractal.Segments[i])
+                .Aggregate(transformed, (current, segment) => current.TransformWith(segment));
             _cache.Add(path, transformed);
             return transformed;
         }
