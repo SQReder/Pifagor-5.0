@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Pifagor.Geometry;
 
@@ -16,29 +17,31 @@ namespace Pifagor.ClusterTree
             _fractal = fractal;
         }
 
-        public async Task<List<FractalCluster>> ProcessLevels(int d)
+        public List<FractalCluster> ProcessLevels(int d)
         {
             var treeBase = _fractal.Segments.Count;
             var lastIndex = ClusterMath.GetFirstIndexOfLayer(treeBase, d + 1);
             var first = 0;
             var last = lastIndex;
-            return await GetValue(first, last);
+            return GetValue(first, last);
         }
 
-        async private Task<List<FractalCluster>> GetValue(int first, int last)
+        private List<FractalCluster> GetValue(int first, int last)
         {
             var treeBase = _fractal.Segments.Count;
-            return await Task.Run(() =>
+            return GetFractalClustersByRange(first, last, treeBase);
+        }
+
+        private List<FractalCluster> GetFractalClustersByRange(int first, int last, int treeBase)
+        {
+            var result = new List<FractalCluster>();
+            for (var i = first; i != last; ++i)
             {
-                var result = new List<FractalCluster>();
-                for (var i = first; i != last; ++i)
-                {
-                    var path = ClusterMath.GetPathToIndex(treeBase, i);
-                    var cluster = Transform(path);
-                    result.Add(cluster);
-                }
-                return result;
-            });
+                var path = ClusterMath.GetPathToIndex(treeBase, i);
+                var cluster = Transform(path);
+                result.Add(cluster);
+            }
+            return result;
         }
 
         private FractalCluster Transform(int[] path)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Pifagor.ClusterTree;
@@ -60,11 +61,15 @@ namespace SQReder.Pifagor
         private void button1_Click(object sender, EventArgs e)
         {
             _count++;
-            
-            _fractal
-                .ProcessLevels(_count)
-                .ContinueWith(task => RenderEngine.Render(task.Result).Result, TaskContinuationOptions.OnlyOnRanToCompletion)
-                .ContinueWith(task => DrawFractalBuffered(task.Result));
+
+            var cts = new CancellationTokenSource();
+            var renderEngine = new RenderEngine();
+
+            var clusters = _fractal.ProcessLevels(_count);
+            renderEngine.StartRender();
+            renderEngine.Render(clusters);
+            renderEngine.EndRender();
+            DrawFractalBuffered(renderEngine.Result);
         }
     }
 }

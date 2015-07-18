@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading.Tasks;
@@ -6,29 +7,54 @@ using Pifagor.Geometry;
 
 namespace Pifagor.Graphics
 {
-    public static class RenderEngine
+    public class RenderEngine
     {
-        public static Task<Bitmap> Render(List<FractalCluster> clusters)
+        private Bitmap _bitmap;
+        public bool RenderInProcess { get; private set; }
+
+        public Bitmap Result
         {
-            return Task<Bitmap>.Run(() => RenderMethod(clusters));
+            get
+            {
+                if (RenderInProcess)
+                    throw new InvalidOperationException();
+                return _bitmap;
+            }
         }
 
-        private static Bitmap RenderMethod(List<FractalCluster> clusters)
+        public void StartRender()
         {
-            var bitmap = new Bitmap(1000, 1000);
+            if (RenderInProcess)
+                throw new InvalidOperationException();
+            _bitmap = new Bitmap(1000, 1000);
+        }
 
-            var g = System.Drawing.Graphics.FromImage(bitmap);
+        public void EndRender()
+        {
+            if (!RenderInProcess)
+                throw new InvalidOperationException();
+        }
+
+        public Bitmap Render(List<FractalCluster> clusters)
+        {
+            if (!RenderInProcess)
+                throw new InvalidOperationException();
+            return RenderMethod(clusters);
+        }
+
+        private Bitmap RenderMethod(List<FractalCluster> clusters)
+        {
+
+            var g = System.Drawing.Graphics.FromImage(_bitmap);
             DrawFractal(g, clusters);
 
-            return bitmap;
+            return _bitmap;
         }
 
-        private static void DrawFractal(System.Drawing.Graphics g, List<FractalCluster> clusters)
+        private void DrawFractal(System.Drawing.Graphics g, List<FractalCluster> clusters)
         {
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.SmoothingMode = SmoothingMode.HighQuality;
-
-            //g.FillRectangle(SystemBrushes.Control, DisplayRectangle); // disabled for no size available
 
             // scale segment
             var seg = new Segment(new Vector(650, 0), new Vector(750, 0));
