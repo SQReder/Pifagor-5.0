@@ -14,7 +14,7 @@ namespace Pifagor.Graphics
     {
         private Size _ariaSize;
         private const int TakeBy = 1000;
-        private object _lock = new object();
+        private readonly object _lock = new object();
         private Bitmap _lastBitmap;
 
         public Bitmap LastRendered 
@@ -55,7 +55,7 @@ namespace Pifagor.Graphics
                     .AsOrdered()
                     .WithCancellation(token)
                     .WithMergeOptions(ParallelMergeOptions.NotBuffered)
-                    .Select(r => DrawPartial(clusters.GetRange(r.Skip, r.Take)))
+                    .Select(r => DrawPartial(clusters.GetRange(r.Begin, r.Count)))
                     .ForAll(b =>
                     {
                         lock (drawLock)

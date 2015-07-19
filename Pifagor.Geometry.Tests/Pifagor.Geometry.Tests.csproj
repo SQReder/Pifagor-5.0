@@ -68,9 +68,7 @@
     <Compile Include="TransformationChainTests.cs" />
     <Compile Include="VectorTests.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Factories\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

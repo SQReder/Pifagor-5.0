@@ -6,7 +6,7 @@ using Pifagor.ClusterTree;
 using Pifagor.Geometry;
 using Pifagor.Graphics;
 
-namespace SQReder.Pifagor
+namespace Pifagor
 {
     public partial class Form1 : Form
     {
@@ -76,14 +76,18 @@ namespace SQReder.Pifagor
             }
 
             DrawFractalBuffered(_renderEngine.LastRendered);
-
-            GC.Collect();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
             e.Graphics.DrawImageUnscaled(_renderEngine.LastRendered, 0, 0);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            _count = 0;
+            button1_Click(null, null);
         }
     }
 }

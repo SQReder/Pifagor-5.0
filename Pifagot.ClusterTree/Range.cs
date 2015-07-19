@@ -5,12 +5,12 @@ namespace Pifagor.ClusterTree
 {
     public struct Range: IEnumerable<int>
     {
-        public int Skip;
-        public int Take;
+        public int Begin;
+        public int Count;
 
         public IEnumerator<int> GetEnumerator()
         {
-            for (var i = Skip; i < Skip + Take; i++)
+            for (var i = Begin; i < Begin + Count; i++)
             {
                 yield return i;
             }

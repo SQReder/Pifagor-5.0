@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace SQReder.Pifagor
+namespace Pifagor
 {
     static class Program
     {
