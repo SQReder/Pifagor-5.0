@@ -23,7 +23,7 @@ namespace Pifagor.Graphics
         /// <summary>
         /// Количество кластеров на котрые бьется задание рендера для параллелизации
         /// </summary>
-        private const int ClusterBatchSize = 16;
+        private const int ClusterBatchSize = 1024;
 
         private readonly object _lock = new object();
         private Bitmap _lastFullRenderedBitmap;
@@ -99,26 +99,23 @@ namespace Pifagor.Graphics
         /// </summary>
         /// <param name="clusters">Кластеры для рендера</param>
         /// <returns>Изображение на котором отрендерены кластеры</returns>
-        /// todo reduce buffer image size
         private Tuple<Bitmap, Point> PartialDraw(IEnumerable<FractalCluster> clusters)
         {
-            var scaledClusters = clusters.AsParallel().Select(c => c.TransformWith(_scaleSegment)).ToList();
+            var scaledClusters = clusters.Select(c => c.TransformWith(_scaleSegment)).ToList();
 
             var rect = ClusterMath.ClustersClipRectangle(scaledClusters);
-            var seg = new Segment(rect.Left, rect.Top, rect.Right, rect.Bottom);
-            var offset = new Size(rect.Left, rect.Top);
-            var offsetSegment = new Segment(-offset.Width, -offset.Height, -offset.Width + 1, -offset.Height);
-            var shiftedSegments = scaledClusters.AsParallel().Select(c => c.TransformWith(offsetSegment)).ToList();
-            var width = (int) (seg.End.X - seg.Begin.X);
-            var height = (int) (seg.End.Y - seg.Begin.Y);
+            var width = rect.Right - rect.Left;
+            var height = rect.Bottom - rect.Top;
             var bitmap = new Bitmap(width, height);
             var graphics = System.Drawing.Graphics.FromImage(bitmap);
 
-            DrawFractal(graphics, Pens.Black, shiftedSegments);
-            //var pen = new Pen(_colorGenerator.RandomColor());
-            //graphics.DrawRectangle(pen, 0, 0, bitmap.Width - 1, bitmap.Height - 1);
+            // Смещаем кластер
+            var offsetSegment = new Segment(-rect.Left, -rect.Top, -rect.Left + 1, -rect.Top);
+            var shiftedSegments = scaledClusters.Select(c => c.TransformWith(offsetSegment));
 
-            return new Tuple<Bitmap, Point>(bitmap, new Point(offset.Width, offset.Height));
+            DrawFractal(graphics, Pens.Black, shiftedSegments);
+
+            return new Tuple<Bitmap, Point>(bitmap, new Point(rect.Left, rect.Top));
         }
 
         /// <summary>
@@ -127,7 +124,6 @@ namespace Pifagor.Graphics
         /// <param name="g">Экземпляр Graphics</param>
         /// <param name="pen"></param>
         /// <param name="clusters">Кластеры для рендера</param>
-        /// <param name="offset"></param>
         private void DrawFractal(System.Drawing.Graphics g, Pen pen, IEnumerable<FractalCluster> clusters)
         {
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;

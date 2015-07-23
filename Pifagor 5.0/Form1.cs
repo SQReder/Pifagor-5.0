@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -71,10 +72,13 @@ namespace Pifagor
 
             try
             {
+                var stopwatch = new Stopwatch();
                 button1.Text = $"Process {_count}";
+                stopwatch.Start();
                 var clusters = await _fractal.ProcessLevels(_cts.Token, _count);
                 await _renderEngine.RenderAsync(_cts.Token, clusters);
-                button1.Text = $"Finished {_count}";
+                stopwatch.Stop();
+                button1.Text = $"Finished {_count} in {stopwatch.Elapsed}";
             }
             catch (OperationCanceledException ex)
             {
