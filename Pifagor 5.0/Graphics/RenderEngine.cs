@@ -17,10 +17,13 @@ namespace Pifagor.Graphics
         /// </summary>
         private Size _imageBufferSize;
 
+        readonly Segment _scaleSegment = new Segment(new Vector(650, 0), new Vector(750, 0));
+        readonly RandomColorGenerator _colorGenerator = new RandomColorGenerator();
+
         /// <summary>
         /// Количество кластеров на котрые бьется задание рендера для параллелизации
         /// </summary>
-        private const int ClusterBatchSize = 1000;
+        private const int ClusterBatchSize = 10;
 
         private readonly object _lock = new object();
         private Bitmap _lastFullRenderedBitmap;
@@ -99,10 +102,20 @@ namespace Pifagor.Graphics
         /// todo reduce buffer image size
         private Bitmap DrawPartial(List<FractalCluster> clusters)
         {
-            var bitmap = new Bitmap(_imageBufferSize.Width, _imageBufferSize.Height);
+            var fractalClusters = clusters.Select(c => c.TransformWith(_scaleSegment)).ToList();
+            var rect = ClusterMath.ClustersClipRectangle(fractalClusters);
+            var x = Math.Max(rect.Right, rect.Width);
+            var y = Math.Max(rect.Bottom, rect.Height);
+            var seg1 = new Segment(rect.Left,rect.Top,rect.Right,rect.Bottom);
+            var seg = new Segment(rect.Left,rect.Top,x,y);
+            var width = (int)seg.End.X;
+            var height = (int)seg.End.Y;
+            var bitmap = new Bitmap(width, height);
             var graphics = System.Drawing.Graphics.FromImage(bitmap);
 
-            DrawFractal(graphics, clusters);
+            DrawFractal(graphics, fractalClusters);
+            var pen = new Pen(_colorGenerator.RandomColor());
+            graphics.DrawRectangle(pen, (int)seg1.Begin.X, (int)seg1.Begin.Y, (int)seg1.End.X - (int)seg1.Begin.X-1, (int)seg.End.Y - (int)seg1.Begin.Y-1);
 
             return bitmap;
         }
@@ -117,13 +130,25 @@ namespace Pifagor.Graphics
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.SmoothingMode = SmoothingMode.HighQuality;
 
-            // scale segment
-            var seg = new Segment(new Vector(650, 0), new Vector(750, 0));
             foreach (var cluster in clusters)
             {
-                var fc = cluster.TransformWith(seg);
+                var fc = cluster;
                 fc.Draw(g, Pens.Black);
             }
+        }
+    }
+
+    public class RandomColorGenerator
+    {
+        readonly Random r = new Random(DateTime.Now.Millisecond);
+
+        public Color RandomColor()
+        {
+            byte red = (byte)r.Next(0, 255);
+            byte green = (byte)r.Next(0, 255);
+            byte blue = (byte)r.Next(0, 255);
+
+            return Color.FromArgb(128, red, green, blue);
         }
     }
 }
