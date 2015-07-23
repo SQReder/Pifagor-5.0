@@ -7,7 +7,7 @@
     <ProjectGuid>{A901BBA1-F98B-4561-BFBE-550B7B243FA2}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SQReder.Pifagor</RootNamespace>
+    <RootNamespace>Pifagor</RootNamespace>
     <AssemblyName>Pifagor 5.0</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -85,6 +85,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Graphics\RenderEngine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -137,15 +138,12 @@
       <Project>{a4dd12e4-6a3c-4df4-b332-f1a104c21421}</Project>
       <Name>Pifagor.Geometry</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Pifagor.Graphics\Pifagor.Graphics.csproj">
-      <Project>{B0157986-F7F4-476B-930C-D507EC645C02}</Project>
-      <Name>Pifagor.Graphics</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Pifagot.ClusterTree\Pifagor.ClusterTree.csproj">
       <Project>{7223e56f-a82e-4379-90e2-8ea843f5faea}</Project>
       <Name>Pifagor.ClusterTree</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -32,6 +32,12 @@ namespace Pifagor.ClusterTree
             return n - 1;
         }
 
+       /// <summary>
+       /// Позволяет получить индекс первого элемента на указанном уровне дерева
+       /// </summary>
+       /// <param name="treeBase">порядок дерева</param>
+       /// <param name="layer">Номер уровня</param>
+       /// <returns>Индекс первого элемента на уровне дерева</returns>
         public static int GetFirstIndexOfLayer(int treeBase, int layer)
         {
             if (layer < 0)
@@ -49,19 +55,32 @@ namespace Pifagor.ClusterTree
             return sum + 1;
         }
 
-        internal static List<int> ConvertNumberToBase(int treeBase, int x)
+        /// <summary>
+        /// Переводит число из десятичной системы счисления в указанную
+        /// </summary>
+        /// <param name="base">Основание системы счисления</param>
+        /// <param name="x">Число для перевода</param>
+        /// <returns>Список значений позиций числа в указанной системе счисления</returns>
+        internal static List<int> ConvertNumberToBase(int @base, int x)
         {
             var path = new List<int>();
             do
             {
-                path.Add(x % treeBase);
-                x = x / treeBase;
+                path.Add(x % @base);
+                x = x / @base;
             }
             while (x != 0);
 
             return path;
         }
 
+
+        /// <summary>
+        /// Ищет путь до ноды с укзанным индексом в дереве заданного порядка
+        /// </summary>
+        /// <param name="treeBase">Порядок дерева</param>
+        /// <param name="index">Индекс ноды в дереве</param>
+        /// <returns>Список индексов нод внутри уровней дерева, ведущих к указанной ноде</returns>
         public static int[] GetPathToIndex(int treeBase, int index)
         {
             if (index == 0)
@@ -100,7 +119,13 @@ namespace Pifagor.ClusterTree
             return max;
         }
 
-        public static IEnumerable<Range> MakeRanges(int count, int takeBy)
+        /// <summary>
+        /// Делит общее количество элементов на промежутки указанного размера
+        /// </summary>
+        /// <param name="count">Общее количество элементов</param>
+        /// <param name="takeBy">Максимальный размер промежутка</param>
+        /// <returns>Набор промежутков заданного размера</returns>
+        public static List<Range> MakeRanges(int count, int takeBy)
         {
             var ranges = new List<Range>();
             for (var skip = 0; skip < count; skip += takeBy)
@@ -109,7 +134,7 @@ namespace Pifagor.ClusterTree
                 if (skip + take > count)
                     take = count - skip;
 
-                ranges.Add(new Range {Skip = skip, Take = take});
+                ranges.Add(new Range(skip, take));
             }
             return ranges;
         }
