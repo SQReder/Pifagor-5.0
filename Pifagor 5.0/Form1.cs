@@ -65,23 +65,25 @@ namespace Pifagor
 
             _count++;
 
+            var progress = new Progress<int>(i => this.Text = i.ToString());
+
             try
             {
                 var clusters = await _fractal.ProcessLevels(_cts.Token, _count);
-                await _renderEngine.Render(_cts.Token, clusters);
+                await _renderEngine.RenderAsync(_cts.Token, clusters);
             }
             catch (OperationCanceledException ex)
             {
                 Text = ex.Message;
             }
 
-            DrawFractalBuffered(_renderEngine.LastRendered);
+            DrawFractalBuffered(_renderEngine.LastFullRenderedResult);
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            e.Graphics.DrawImageUnscaled(_renderEngine.LastRendered, 0, 0);
+            e.Graphics.DrawImageUnscaled(_renderEngine.LastFullRenderedResult, 0, 0);
         }
 
         private void button2_Click(object sender, EventArgs e)

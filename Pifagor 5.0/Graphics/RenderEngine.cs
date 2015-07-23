@@ -12,43 +12,61 @@ namespace Pifagor.Graphics
 {
     public class RenderEngine
     {
-        private Size _ariaSize;
-        private const int TakeBy = 1000;
-        private readonly object _lock = new object();
-        private Bitmap _lastBitmap;
+        /// <summary>
+        /// Размеры изображения-буфера
+        /// </summary>
+        private Size _imageBufferSize;
 
-        public Bitmap LastRendered 
+        /// <summary>
+        /// Количество кластеров на котрые бьется задание рендера для параллелизации
+        /// </summary>
+        private const int ClusterBatchSize = 1000;
+
+        private readonly object _lock = new object();
+        private Bitmap _lastFullRenderedBitmap;
+
+        public Bitmap LastFullRenderedResult 
         {
-            get { return _lastBitmap; }
+            get { return _lastFullRenderedBitmap; }
             private set
             {
                 lock (_lock)
                 {
-                    _lastBitmap = value;
+                    _lastFullRenderedBitmap = value;
                 }
             }
         }
 
-        public RenderEngine(Size ariaSize)
+        /// <summary>
+        /// Создает новый объект
+        /// </summary>
+        /// <param name="imageBufferSize">Размеры изображения-буфера</param>
+        public RenderEngine(Size imageBufferSize)
         {
-            _ariaSize = ariaSize;
-            _lastBitmap = new Bitmap(1, 1);
+            _imageBufferSize = imageBufferSize;
+            _lastFullRenderedBitmap = new Bitmap(1, 1);
         }
 
-        public Task Render(CancellationToken token, List<FractalCluster> clusters)
+        /// <summary>
+        /// Асинхронно рендерит кластеры
+        /// </summary>
+        /// <param name="token">Токен отмены</param>
+        /// <param name="clusters">Кластеры для рендера</param>
+        /// <returns>Задачу рендера</returns>
+        public Task RenderAsync(CancellationToken token, List<FractalCluster> clusters)
         {
             return Task.Run(() => RenderMethod(token, clusters), token);
         }
-
+        
         private void RenderMethod(CancellationToken token, List<FractalCluster> clusters)
         {
 
-            var bitmap = new Bitmap(_ariaSize.Width, _ariaSize.Height);
+            var bitmap = new Bitmap(_imageBufferSize.Width, _imageBufferSize.Height);
             var g = System.Drawing.Graphics.FromImage(bitmap);
 
             var drawLock = new object();
 
-            var ranges = ClusterMath.MakeRanges(clusters.Count, TakeBy);
+            var ranges = ClusterMath.MakeRanges(clusters.Count, ClusterBatchSize);
             try
             {
                 ranges.AsParallel()
@@ -64,18 +82,24 @@ namespace Pifagor.Graphics
                         }
                     });
 
-                _lastBitmap = bitmap;
+                _lastFullRenderedBitmap = bitmap;
             }
             catch (OperationCanceledException e)
             {
-                _lastBitmap = new Bitmap(1,1);
+                _lastFullRenderedBitmap = new Bitmap(1,1);
                 throw;
             }
         }
 
+        /// <summary>
+        /// Рендерит кластеры в отдельном изображении
+        /// </summary>
+        /// <param name="clusters">Кластеры для рендера</param>
+        /// <returns>Изображение на котором отрендерены кластеры</returns>
+        /// todo reduce buffer image size
         private Bitmap DrawPartial(List<FractalCluster> clusters)
         {
-            var bitmap = new Bitmap(_ariaSize.Width, _ariaSize.Height);
+            var bitmap = new Bitmap(_imageBufferSize.Width, _imageBufferSize.Height);
             var graphics = System.Drawing.Graphics.FromImage(bitmap);
 
             DrawFractal(graphics, clusters);
@@ -83,6 +107,11 @@ namespace Pifagor.Graphics
             return bitmap;
         }
 
+        /// <summary>
+        /// Рендерит кластеры на конкретной поверхности
+        /// </summary>
+        /// <param name="g">Экземпляр Graphics</param>
+        /// <param name="clusters">Кластеры для рендера</param>
         private void DrawFractal(System.Drawing.Graphics g, List<FractalCluster> clusters)
         {
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;

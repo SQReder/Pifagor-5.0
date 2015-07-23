@@ -10,7 +10,7 @@ namespace Pifagor.ClusterTree.Tests
         [Test]
         public void Enumerable()
         {
-            var range = new Range {Begin = 10, Count = 5};
+            var range = new Range(10, 5);
             var actual = range.ToList();
             var expected = new List<int> {10, 11, 12, 13, 14};
             Assert.That(actual, Is.EqualTo(expected));

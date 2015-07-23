@@ -3,10 +3,16 @@ using System.Collections.Generic;
 
 namespace Pifagor.ClusterTree
 {
-    public struct Range: IEnumerable<int>
+    public class Range: IEnumerable<int>
     {
-        public int Begin;
-        public int Count;
+        public readonly int Begin;
+        public readonly int Count;
+
+        public Range(int begin, int count)
+        {
+            Begin = begin;
+            Count = count;
+        }
 
         public IEnumerator<int> GetEnumerator()
         {
