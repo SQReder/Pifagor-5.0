@@ -30,11 +30,11 @@ namespace Pifagor
         {
             var cluster = new FractalCluster
             {
-                Segments = { 
-                    new Segment(new Vector(0.4, 1.5), new Vector(1, 1)),
-                    new Segment(new Vector(0, 1), new Vector(0.4, 1.5))
-                    //new Segment(new Vector(0.5, 1.5), new Vector(1, 1)),
-                    //new Segment(new Vector(0, 1), new Vector(0.5, 1.5))
+                Segments = {
+                    //new Segment(new Vector(0.4, 1.5), new Vector(1, 1)),
+                    //new Segment(new Vector(0, 1), new Vector(0.4, 1.5))
+                    new Segment(new Vector(0.5, 1.5), new Vector(1, 1)),
+                    new Segment(new Vector(0, 1), new Vector(0.5, 1.5))
                 },
                 Decore =
                 {
@@ -74,6 +74,7 @@ namespace Pifagor
                 button1.Text = $"Process {_count}";
                 var clusters = await _fractal.ProcessLevels(_cts.Token, _count);
                 await _renderEngine.RenderAsync(_cts.Token, clusters);
+                button1.Text = $"Finished {_count}";
             }
             catch (OperationCanceledException ex)
             {
@@ -81,7 +82,6 @@ namespace Pifagor
             }
 
             DrawFractalBuffered(_renderEngine.LastFullRenderedResult);
-            button1.Text = "Finished";
         }
 
         protected override void OnPaint(PaintEventArgs e)

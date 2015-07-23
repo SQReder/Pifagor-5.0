@@ -23,7 +23,7 @@ namespace Pifagor.Graphics
         /// <summary>
         /// Количество кластеров на котрые бьется задание рендера для параллелизации
         /// </summary>
-        private const int ClusterBatchSize = 10;
+        private const int ClusterBatchSize = 128;
 
         private readonly object _lock = new object();
         private Bitmap _lastFullRenderedBitmap;
@@ -76,7 +76,7 @@ namespace Pifagor.Graphics
                     .AsOrdered()
                     .WithCancellation(token)
                     .WithMergeOptions(ParallelMergeOptions.NotBuffered)
-                    .Select(r => DrawPartial(clusters.GetRange(r.Begin, r.Count)))
+                    .Select(r => PartialDraw(clusters.GetRange(r.Begin, r.Count)))
                     .ForAll(b =>
                     {
                         lock (drawLock)
@@ -100,22 +100,21 @@ namespace Pifagor.Graphics
         /// <param name="clusters">Кластеры для рендера</param>
         /// <returns>Изображение на котором отрендерены кластеры</returns>
         /// todo reduce buffer image size
-        private Bitmap DrawPartial(List<FractalCluster> clusters)
+        private Bitmap PartialDraw(IEnumerable<FractalCluster> clusters)
         {
-            var fractalClusters = clusters.Select(c => c.TransformWith(_scaleSegment)).ToList();
-            var rect = ClusterMath.ClustersClipRectangle(fractalClusters);
-            var x = Math.Max(rect.Right, rect.Width);
-            var y = Math.Max(rect.Bottom, rect.Height);
+            var scaledClusters = clusters.AsParallel().Select(c => c.TransformWith(_scaleSegment)).ToList();
+
+            var rect = ClusterMath.ClustersClipRectangle(scaledClusters);
             var seg1 = new Segment(rect.Left,rect.Top,rect.Right,rect.Bottom);
-            var seg = new Segment(rect.Left,rect.Top,x,y);
-            var width = (int)seg.End.X;
-            var height = (int)seg.End.Y;
+            var width = (int)seg1.End.X;
+            var height = (int)seg1.End.Y;
             var bitmap = new Bitmap(width, height);
             var graphics = System.Drawing.Graphics.FromImage(bitmap);
 
-            DrawFractal(graphics, fractalClusters);
+            DrawFractal(graphics, scaledClusters);
             var pen = new Pen(_colorGenerator.RandomColor());
-            graphics.DrawRectangle(pen, (int)seg1.Begin.X, (int)seg1.Begin.Y, (int)seg1.End.X - (int)seg1.Begin.X-1, (int)seg.End.Y - (int)seg1.Begin.Y-1);
+            graphics.DrawRectangle(pen, (int)seg1.Begin.X, (int)seg1.Begin.Y, (int)seg1.End.X - (int)seg1.Begin.X-1, (int)seg1.End.Y - (int)seg1.Begin.Y-1);
+            graphics.DrawRectangle(new Pen(Color.PaleVioletRed), 0,0, bitmap.Width-1, bitmap.Height-1);
 
             return bitmap;
         }
@@ -125,7 +124,7 @@ namespace Pifagor.Graphics
         /// </summary>
         /// <param name="g">Экземпляр Graphics</param>
         /// <param name="clusters">Кластеры для рендера</param>
-        private void DrawFractal(System.Drawing.Graphics g, List<FractalCluster> clusters)
+        private void DrawFractal(System.Drawing.Graphics g, IEnumerable<FractalCluster> clusters)
         {
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.SmoothingMode = SmoothingMode.HighQuality;
