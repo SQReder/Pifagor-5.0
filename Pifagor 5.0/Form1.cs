@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -30,7 +31,9 @@ namespace Pifagor
         {
             var cluster = new FractalCluster
             {
-                Segments = { 
+                Segments = {
+                    //new Segment(new Vector(0.4, 1.5), new Vector(1, 1)),
+                    //new Segment(new Vector(0, 1), new Vector(0.4, 1.5))
                     new Segment(new Vector(0.5, 1.5), new Vector(1, 1)),
                     new Segment(new Vector(0, 1), new Vector(0.5, 1.5))
                 },
@@ -69,8 +72,13 @@ namespace Pifagor
 
             try
             {
+                var stopwatch = new Stopwatch();
+                button1.Text = $"Process {_count}";
+                stopwatch.Start();
                 var clusters = await _fractal.ProcessLevels(_cts.Token, _count);
                 await _renderEngine.RenderAsync(_cts.Token, clusters);
+                stopwatch.Stop();
+                button1.Text = $"Finished {_count} in {stopwatch.Elapsed}";
             }
             catch (OperationCanceledException ex)
             {

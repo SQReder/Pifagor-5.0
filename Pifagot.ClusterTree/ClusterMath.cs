@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Pifagor.Geometry;
 
@@ -137,6 +138,13 @@ namespace Pifagor.ClusterTree
                 ranges.Add(new Range(skip, take));
             }
             return ranges;
+        }
+
+        public static Rectangle ClustersClipRectangle(IEnumerable<FractalCluster> clusters)
+        {
+            var rectangles = clusters.Select(c => c.ClipRectangle()).ToList();
+            var rectangle = rectangles.Aggregate(rectangles.First(), (Rectangle.Union));
+            return rectangle;
         }
     }
 }
