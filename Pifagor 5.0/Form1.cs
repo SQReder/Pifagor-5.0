@@ -71,6 +71,7 @@ namespace Pifagor
 
             try
             {
+                button1.Text = $"Process {_count}";
                 var clusters = await _fractal.ProcessLevels(_cts.Token, _count);
                 await _renderEngine.RenderAsync(_cts.Token, clusters);
             }
@@ -80,6 +81,7 @@ namespace Pifagor
             }
 
             DrawFractalBuffered(_renderEngine.LastFullRenderedResult);
+            button1.Text = "Finished";
         }
 
         protected override void OnPaint(PaintEventArgs e)
